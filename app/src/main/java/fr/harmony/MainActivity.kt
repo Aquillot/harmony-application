@@ -10,21 +10,24 @@ import dagger.hilt.android.AndroidEntryPoint
 import fr.harmony.ui.theme.MyApplicationTheme
 import fr.harmony.login.mvi.LoginScreen
 import fr.harmony.api.TokenManager
+import javax.inject.Inject
 
 // Le point d'entrée de l'application Harmony
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var tokenManager: TokenManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val tokenManager = TokenManager(this)
-
-        var token = tokenManager.getToken()
-
         super.onCreate(savedInstanceState)
+
+
         setContent {
             MyApplicationTheme {
                 val nav = rememberNavController()
                 // Determination de la destination de départ
                 var startDestination = "home"
+                var token = tokenManager.getToken()
                 if (token == null) {
                     startDestination = "login"
                 }

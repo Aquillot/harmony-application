@@ -21,13 +21,13 @@ object NetworkModule {
     // Singleton est une annotation de Dagger qui permet de créer une seule instance
     // de la classe pour toute l'application
     @Provides @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient( authInterceptor: AuthInterceptor ): OkHttpClient {
         // HttpLoggingInterceptor est une bibliothèque qui permet de logger les requêtes et les réponses
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
         return OkHttpClient.Builder()
-            .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
             .build()
     }
 
@@ -44,8 +44,8 @@ object NetworkModule {
         moshi: Moshi
     ): Retrofit = Retrofit.Builder()
         .baseUrl("https://harmony.jhune.dev/")
-        .client(client)                                     // indispensable pour OkHttp
         .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .client(client)
         .build()
 
     @Provides @Singleton
