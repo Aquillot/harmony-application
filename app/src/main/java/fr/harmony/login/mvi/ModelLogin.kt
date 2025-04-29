@@ -3,6 +3,7 @@ package fr.harmony.login.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import fr.harmony.login.data.ApiErrorException
 import fr.harmony.login.domain.LoginUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,7 +72,8 @@ class ModelLogin @Inject constructor (
                 )
                 println("Token: ${loginResult.token}, User ID: ${loginResult.user_id}")
             } else {
-                _actions.emit(ActionLogin.Failure(result.exceptionOrNull()?.message ?: "Erreur réseau"))
+                val code = (result.exceptionOrNull() as? ApiErrorException)?.errorCode ?: "UNKNOWN_ERROR"
+                _actions.emit(ActionLogin.Failure(code))
             }
         }
     }
@@ -82,7 +84,7 @@ class ModelLogin @Inject constructor (
         val newState = when (action) {
             is ActionLogin.Loading -> StateLogin.Loading // On est en train de se connecter
             is ActionLogin.Success -> StateLogin.Success(action.token) // On est connecté
-            is ActionLogin.Failure -> StateLogin.Error(action.error) // On a échoué
+            is ActionLogin.Failure -> StateLogin.Error(action.errorCode) // On a échoué
         }
         // On va émettre le nouvel état dans le flux d'état
         _state.value = newState

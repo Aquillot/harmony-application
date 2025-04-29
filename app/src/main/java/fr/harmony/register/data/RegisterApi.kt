@@ -1,11 +1,13 @@
-package fr.harmony.login.data
+package fr.harmony.register.data
+
 
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 // Représentation du JSON d’entrée
-data class LoginRequest(
+data class RegisterRequest(
     val email: String,
+    val username: String,
     val password: String
 )
 
@@ -20,14 +22,13 @@ class ApiErrorException(val errorCode: String) : Exception(errorCode)
 
 
 // Représentation du JSON de sortie
-data class LoginResponse(
+data class RegisterResponse(
     val message: String,    // "Connexion réussie"
-    val token: String,      // ton JWT
     val user_id: Int        // id retourné
 )
 
-// Interface qui permet de faire la connexion à l'API donc est pris en paramètre par LoginRepositoryImpl
-interface LoginApi {
-    @POST("login")
-    suspend fun login(@Body request: LoginRequest): LoginResponse
+// Interface qui permet de faire la connexion à l'API donc est pris en paramètre par RegisterRepositoryImpl
+interface RegisterApi {
+    @POST("add_user")
+    suspend fun register(@Body request: RegisterRequest): RegisterResponse
 }

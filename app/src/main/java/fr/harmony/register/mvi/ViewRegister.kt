@@ -1,4 +1,4 @@
-package fr.harmony.login.mvi
+package fr.harmony.register.mvi
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -10,22 +10,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import fr.harmony.R
 import fr.harmony.components.authentication.EmailTextField
 import fr.harmony.components.authentication.PasswordTextField
 import fr.harmony.ui.theme.AppThemeColors
-import fr.harmony.R
 
-
-// hiltViewModel() permet d'injecter le ViewModelLogin dans la fonction
-// ViewModelLogin est le ViewModel qui gère la logique métier de l'écran de login
-// onLoginSuccess est une fonction de rappel qui sera appelée lorsque la connexion réussit
+// hiltViewModel() permet d'injecter le ViewModelRegister dans la fonction
+// ViewModelRegister est le ViewModel qui gère la logique métier de l'écran de register
+// onRegisterSuccess est une fonction de rappel qui sera appelée lorsque la connexion réussit
 @Composable
-fun LoginScreen(vm: ModelLogin = hiltViewModel(), onLoginSuccess: (String) -> Unit,onNavigateToRegister : () -> Unit) {
+fun RegisterScreen(vm: ModelRegister = hiltViewModel(), onRegisterSuccess: (String) -> Unit, onNavigateToLogin: () -> Unit) {
     // Récupération de l'état du ViewModel en utilisant collectAsState qui permet de réagir aux changements d'état
     val state by vm.state.collectAsState()
     // Attributs de la vue
-    var email by remember { mutableStateOf("") }
+    var email    by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -34,42 +35,46 @@ fun LoginScreen(vm: ModelLogin = hiltViewModel(), onLoginSuccess: (String) -> Un
 
         // Affichage selon l'Etat
         when (state) {
-            is StateLogin.Success -> {
+            is StateRegister.Success -> {
                 // On peut naviguer vers l'écran d'accueil et passer le token
-                onLoginSuccess((state as StateLogin.Success).token)
+                onRegisterSuccess((state as StateRegister.Success).token)
             }
 
-            is StateLogin.Initial -> FormLogin(
-                // On affiche le formulaire de login car l'utilisateur n'est pas connecté
-                email, password,
+            is StateRegister.Initial -> FormRegister(
+                // On affiche le formulaire de Register car l'utilisateur n'est pas connecté
+                email, username, password,
                 onEmailChange = { email = it },
                 onPasswordChange = { password = it },
-                onSubmit = { vm.handleIntent(IntentLogin.Login(email, password)) },
-                onNavigateToRegister = onNavigateToRegister
+                onUsernameChange = { username = it },
+                onSubmit = { vm.handleIntent(IntentRegister.Register(email, username, password)) },
+                onNavigateToLogin = onNavigateToLogin
             )
 
-            is StateLogin.Loading -> CircularProgressIndicator() // On affiche un écran de chargement
-            is StateLogin.Error -> ErrorScreen(
-                // On affiche un message d'erreur dans un toast et le formulaire de login
-                email, password,
+            is StateRegister.Loading -> CircularProgressIndicator() // On affiche un écran de chargement
+            is StateRegister.Error -> ErrorScreen(
+                // On affiche un message d'erreur dans un toast et le formulaire de register
+                email, username, password,
                 onEmailChange = { email = it },
+                onUsernameChange = { username = it },
                 onPasswordChange = { password = it },
-                onSubmit = { vm.handleIntent(IntentLogin.Login(email, password)) },
-                onNavigateToRegister = onNavigateToRegister,
-                (state as StateLogin.Error).errorCode
+                onSubmit = { vm.handleIntent(IntentRegister.Register(email, username, password)) },
+                onNavigateToLogin = onNavigateToLogin,
+                (state as StateRegister.Error).message
             )
         }
     }
 }
 
 @Composable
-fun FormLogin(
+fun FormRegister(
     email: String,
+    username: String,
     password: String,
     onEmailChange: (String) -> Unit,
+    onUsernameChange : (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onSubmit: () -> Unit,
-    onNavigateToRegister : () -> Unit
+    onNavigateToLogin: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -86,13 +91,18 @@ fun FormLogin(
         ) {
             // Titre du formulaire
             Text(
-                text = "Se connecter",
+                text = "S'inscrire",
                 style = MaterialTheme.typography.titleLarge,
                 color = AppThemeColors.custom.textColor,
                 modifier = Modifier.padding(bottom = 10.dp)
             )
-
             EmailTextField(email = email, onEmailChange = onEmailChange)
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = username,
+                onValueChange = onUsernameChange,
+                label = { Text("Nom d'utilisateur") }
+            )
             PasswordTextField(password = password, onPasswordChange = onPasswordChange)
 
             Button(
@@ -107,10 +117,10 @@ fun FormLogin(
                     .height(58.dp)
                     .padding(top = 14.dp)
             ) {
-                Text("Se connecter")
+                Text("S'inscrire")
             }
             Button(
-                onClick = onNavigateToRegister,
+                onClick = onNavigateToLogin,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AppThemeColors.custom.lightCard,
                     contentColor = AppThemeColors.custom.darkTextColor
@@ -121,22 +131,22 @@ fun FormLogin(
                     .height(58.dp)
                     .padding(top = 14.dp)
             ) {
-                Text("Créer un compte")
+                Text("Connectez-vous à votre compte")
             }
         }
     }
 }
 
 @Composable
-fun ErrorScreen(
-    email: String,
-    password: String,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onSubmit: () -> Unit,
-    onNavigateToRegister : () -> Unit,
-    messageError: String
-) {
+fun ErrorScreen(email: String,
+                username: String,
+                password: String,
+                onEmailChange: (String) -> Unit,
+                onUsernameChange: (String) -> Unit,
+                onPasswordChange: (String) -> Unit,
+                onSubmit: () -> Unit,
+                onNavigateToLogin: () -> Unit,
+                messageError: String) {
 
     Column(
         modifier = Modifier
@@ -153,13 +163,18 @@ fun ErrorScreen(
         ) {
             // Titre du formulaire
             Text(
-                text = "Se connecter",
+                text = "S'inscrire",
                 style = MaterialTheme.typography.titleLarge,
                 color = AppThemeColors.custom.textColor,
                 modifier = Modifier.padding(bottom = 10.dp)
             )
-
             EmailTextField(email = email, onEmailChange = onEmailChange)
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = username,
+                onValueChange = onUsernameChange,
+                label = { Text("Nom d'utilisateur") }
+            )
             PasswordTextField(password = password, onPasswordChange = onPasswordChange)
 
             Button(
@@ -174,10 +189,10 @@ fun ErrorScreen(
                     .height(58.dp)
                     .padding(top = 14.dp)
             ) {
-                Text("Se connecter")
+                Text("S'inscrire")
             }
             Button(
-                onClick = onNavigateToRegister,
+                onClick = onNavigateToLogin,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AppThemeColors.custom.lightCard,
                     contentColor = AppThemeColors.custom.darkTextColor
@@ -188,19 +203,21 @@ fun ErrorScreen(
                     .height(58.dp)
                     .padding(top = 14.dp)
             ) {
-                Text("Créer un compte")
+                Text("Connectez-vous à votre compte")
             }
         }
+    }
         // Affichage du message d'erreur dans le toast
         Toast.makeText(
             LocalContext.current,
-            if (messageError == "INVALID_CREDENTIALS")
-                stringResource(id = R.string.INVALID_CREDENTIALS)
-            else if (messageError == "ERROR_LOGIN_400")
-                stringResource(id = R.string.ERROR_LOGIN_400)
+            if (messageError == "MISSING_DATA")
+                stringResource(id = R.string.MISSING_DATA)
+            else if (messageError == "EMAIL_ALREADY_USED")
+                stringResource(id = R.string.EMAIL_ALREADY_USED)
+            else if (messageError == "DATABASE_ERROR")
+                stringResource(id = R.string.DATABASE_ERROR)
             else
                 stringResource(id = R.string.UNKNOWN_ERROR),
             Toast.LENGTH_SHORT
         ).show()
-    }
 }

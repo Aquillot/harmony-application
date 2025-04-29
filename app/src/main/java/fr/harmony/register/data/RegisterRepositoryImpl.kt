@@ -1,17 +1,17 @@
-package fr.harmony.login.data
+package fr.harmony.register.data
 
-import fr.harmony.login.domain.LoginRepository
+import fr.harmony.register.domain.RegisterRepository
 import javax.inject.Inject
 
-// class qui permet de faire la connexion à l'API donc prends en paramètre LoginApi
-class LoginRepositoryImpl @Inject constructor(
-    private val api: LoginApi,
+// class qui permet de faire la connexion à l'API donc prends en paramètre RegisterApi
+class RegisterRepositoryImpl @Inject constructor(
+    private val api: RegisterApi,
     private val moshi: com.squareup.moshi.Moshi
-) : LoginRepository {
+) : RegisterRepository {
 
-    override suspend fun login(email: String, password: String): Result<LoginResponse> {
+    override suspend fun register(email: String,username : String, password: String): Result<RegisterResponse> {
         return try {
-            val resp = api.login(LoginRequest(email, password))
+            val resp = api.register(RegisterRequest(email,username, password))
             Result.success(resp)
         } catch (e: retrofit2.HttpException) {
             // On essaie de parser le JSON d'erreur
@@ -27,7 +27,7 @@ class LoginRepositoryImpl @Inject constructor(
             // Si errorCode vaut "null", on prend le code HTTP, sinon on garde la valeur du JSON
             val code = errorResp?.error_code
                 .takeUnless { it == "null" }
-                ?: ("errorLogin" + e.code().toString())
+                ?: ("errorRegister" + e.code().toString())
 
             // On renvoie une exception avec le code d'erreur
             Result.failure(ApiErrorException(code))

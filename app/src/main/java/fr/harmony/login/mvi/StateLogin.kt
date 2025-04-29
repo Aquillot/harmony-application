@@ -6,5 +6,5 @@ sealed class StateLogin {
     object Initial : StateLogin()
     object Loading : StateLogin()
     data class Success(val token : String) : StateLogin()
-    data class Error(val message: String) : StateLogin()
+    data class Error(val errorCode: String) : StateLogin()
 }

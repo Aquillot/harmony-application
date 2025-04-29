@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Harmony</string>
+    <string name="INVALID_CREDENTIALS">The email or password entered is not associated with an account</string>
+    <string name="ERROR_LOGIN_400">The email or password is empty</string>
+    <string name="UNKNOWN_ERROR">An unknown error occurred</string>
+    <string name="MISSING_DATA">Data is missing</string>
+    <string name="EMAIL_ALREADY_USED">The email address is already in use</string>
+    <string name="DATABASE_ERROR">Database error</string>
+</resources>

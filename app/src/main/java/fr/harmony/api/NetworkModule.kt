@@ -23,9 +23,6 @@ object NetworkModule {
     @Provides @Singleton
     fun provideOkHttpClient( authInterceptor: AuthInterceptor ): OkHttpClient {
         // HttpLoggingInterceptor est une bibliothèque qui permet de logger les requêtes et les réponses
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .build()
@@ -48,8 +45,4 @@ object NetworkModule {
         .client(client)
         .build()
 
-    @Provides @Singleton
-    // LoginApi est une interface qui définit les appels réseau
-    fun provideLoginApi(retrofit: Retrofit): LoginApi =
-        retrofit.create(LoginApi::class.java)
 }

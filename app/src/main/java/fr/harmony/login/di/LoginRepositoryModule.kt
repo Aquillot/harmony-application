@@ -11,10 +11,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object LoginModule {
+object LoginRepositoryModule {
     @Provides
     @Singleton
     fun provideLoginRepository(
-        api: LoginApi
-    ): LoginRepository = LoginRepositoryImpl(api)
+        api: LoginApi,
+        moshi: com.squareup.moshi.Moshi
+        ): LoginRepository = LoginRepositoryImpl(api, moshi)
 }
