@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import fr.harmony.ui.theme.MyApplicationTheme
+import fr.harmony.ui.theme.HarmonyTheme
 import fr.harmony.login.mvi.LoginScreen
 import fr.harmony.api.TokenManager
 import javax.inject.Inject
@@ -23,14 +23,11 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            MyApplicationTheme {
+            HarmonyTheme {
                 val nav = rememberNavController()
-                // Determination de la destination de départ
-                var startDestination = "home"
                 var token = tokenManager.getToken()
-                if (token == null) {
-                    startDestination = "login"
-                }
+                val startDestination = if (token == null) "login" else "home"
+
                 println(startDestination)
                 println(token)
                 NavHost(navController = nav, startDestination = startDestination) {

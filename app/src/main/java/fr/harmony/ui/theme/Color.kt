@@ -2,10 +2,19 @@ package fr.harmony.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val backgroundColor = Color(0xFF000000)
+val primaryColor = Color(0xFFFFFFFF)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val lightCardBackgroundColor = Color(0xFFFFFFFF)
+val lightCardStrokeColor = Color(0xFFFEFEFE)
+
+val darkCardBackgroundColor = Color(0xFF333333)
+val darkCardStrokeColor = Color(0xFF383838)
+
+val darkerCardBackgroundColor = Color(0xFF1B1B1B)
+val darkerCardStrokeColor = Color(0xFF1E1E1E)
+
+val textColor = Color(0xFFFFFFFF)
+val darkTextColor = Color(0xFF000000)
+val subtleTextColor = Color(0xFFFCFBFC)
+val disabledTextColor = Color(0x8FDADADA)
