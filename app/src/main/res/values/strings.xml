@@ -6,4 +6,22 @@
     <string name="MISSING_DATA">Les données sont manquantes</string>
     <string name="EMAIL_ALREADY_USED">L\'adresse e-mail est déjà utilisée</string>
     <string name="DATABASE_ERROR">Erreur de base de données</string>
+
+    <!-- Components -->
+    <string name="EMAIL_LABEL">Email</string>
+    <string name="PASSWORD_LABEL">Mot de passe</string>
+    <string name="HIDE_PASSWORD">Masquer le mot de passe</string>
+    <string name="SHOW_PASSWORD">Afficher le mot de passe</string>
+    <string name="BACK_BUTTON">Retour</string>
+
+
+    <!-- Register View -->
+    <string name="REGISTER_TITLE">Créer un compte</string>
+    <string name="REGISTER_BUTTON">S\'inscrire</string>
+    <string name="GO_TO_LOGIN">Pas encore inscrit ? Créez votre compte</string>
+
+    <!-- Login View -->
+    <string name="LOGIN_TITLE">Se connecter</string>
+    <string name="LOGIN_BUTTON">Se connecter</string>
+    <string name="GO_TO_REGISTER">Vous avez déjà un compte ? Connectez-vous</string>
 </resources>

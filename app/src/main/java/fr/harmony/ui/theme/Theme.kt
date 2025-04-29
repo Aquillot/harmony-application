@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 
 // Data class pour les couleurs personnalisées
 data class CustomColors(
@@ -21,9 +22,18 @@ data class CustomColors(
     val disabledTextColor: Color
 )
 
+data class CustomTypography(
+    val title: TextStyle,
+    val smallLine: TextStyle,
+)
+
 // CompositionLocal pour injecter les couleurs
 val LocalCustomColors = staticCompositionLocalOf<CustomColors> {
     error("No CustomColors provided")
+}
+
+val LocalCustomTypography = staticCompositionLocalOf<CustomTypography> {
+    error("No CustomTypography provided")
 }
 
 // Thèmes Material
@@ -54,17 +64,23 @@ fun HarmonyTheme(
         disabledTextColor = disabledTextColor
     )
 
-    CompositionLocalProvider(LocalCustomColors provides customColors) {
+    val customTypography = CustomTypography(
+        title = titleLarge,
+        smallLine = smallLine
+    )
+
+    CompositionLocalProvider(LocalCustomColors provides customColors, LocalCustomTypography provides customTypography) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = Typography,
             content = content
         )
     }
 }
 
 // Accès pratique
-object AppThemeColors {
-    val custom: CustomColors
+object AppTheme {
+    val harmonyColors: CustomColors
         @Composable get() = LocalCustomColors.current
+    val harmonyTypography: CustomTypography
+        @Composable get() = LocalCustomTypography.current
 }

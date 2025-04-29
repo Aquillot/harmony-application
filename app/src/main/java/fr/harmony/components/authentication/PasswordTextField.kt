@@ -20,12 +20,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import fr.harmony.R
-import fr.harmony.ui.theme.AppThemeColors
+import fr.harmony.ui.theme.AppTheme
 
 
 @Composable
@@ -36,7 +37,7 @@ fun PasswordTextField(password: String, onPasswordChange: (String) -> Unit) {
     Box(
         modifier = Modifier.border(
             1.dp,
-            AppThemeColors.custom.darkCardStroke,
+            AppTheme.harmonyColors.darkCardStroke,
             RoundedCornerShape(12.dp)
         )
     ) {
@@ -44,7 +45,7 @@ fun PasswordTextField(password: String, onPasswordChange: (String) -> Unit) {
         TextField(
             value = password,
             onValueChange = onPasswordChange,
-            label = { Text("Mot de passe") },
+            label = { Text(stringResource(R.string.PASSWORD_LABEL)) },
             singleLine = true,
             placeholder = { Text("") },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -58,31 +59,29 @@ fun PasswordTextField(password: String, onPasswordChange: (String) -> Unit) {
                     if (passwordVisible) {
                         Icon(
                             painter = painterResource(id = R.drawable.eye),
-                            contentDescription = "Masquer le mot de passe",
-                            tint = AppThemeColors.custom.disabledTextColor,
-                            modifier = Modifier
-                                .size(24.dp)
+                            contentDescription = stringResource(R.string.HIDE_PASSWORD),
+                            tint = AppTheme.harmonyColors.disabledTextColor,
+                            modifier = Modifier.size(24.dp)
                         )
                     } else {
                         Icon(
                             painter = painterResource(id = R.drawable.eye_slash),
-                            contentDescription = "Afficher le mot de passe",
-                            tint = AppThemeColors.custom.disabledTextColor,
-                            modifier = Modifier
-                                .size(24.dp)
+                            contentDescription = stringResource(R.string.SHOW_PASSWORD),
+                            tint = AppTheme.harmonyColors.disabledTextColor,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
             },
             colors = TextFieldDefaults.colors(
-                focusedTextColor = AppThemeColors.custom.textColor,
-                unfocusedTextColor = AppThemeColors.custom.textColor,
-                focusedLabelColor = AppThemeColors.custom.disabledTextColor,
-                unfocusedLabelColor = AppThemeColors.custom.disabledTextColor,
+                focusedTextColor = AppTheme.harmonyColors.textColor,
+                unfocusedTextColor = AppTheme.harmonyColors.textColor,
+                focusedLabelColor = AppTheme.harmonyColors.disabledTextColor,
+                unfocusedLabelColor = AppTheme.harmonyColors.disabledTextColor,
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
-                focusedContainerColor = AppThemeColors.custom.darkCard,
-                unfocusedContainerColor = AppThemeColors.custom.darkCard,
+                focusedContainerColor = AppTheme.harmonyColors.darkCard,
+                unfocusedContainerColor = AppTheme.harmonyColors.darkCard,
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)

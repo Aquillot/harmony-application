@@ -11,25 +11,23 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import fr.harmony.R
 import fr.harmony.ui.theme.AppTheme
 
 @Composable
-fun EmailTextField(email: String, onEmailChange: (String) -> Unit) {
+fun BaseTextField(value: String, label: String, onValueChange: (String) -> Unit) {
     Box(
         modifier = Modifier
             .border(1.dp, AppTheme.harmonyColors.darkCardStroke, RoundedCornerShape(12.dp))
     ) {
         TextField(
-            value = email,
-            onValueChange = onEmailChange,
-            label = { Text(stringResource(R.string.EMAIL_LABEL)) },
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text(label) },
             singleLine = true,
             placeholder = { Text("") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             colors = TextFieldDefaults.colors(
                 focusedTextColor = AppTheme.harmonyColors.textColor,
                 unfocusedTextColor = AppTheme.harmonyColors.textColor,
@@ -40,8 +38,7 @@ fun EmailTextField(email: String, onEmailChange: (String) -> Unit) {
                 focusedContainerColor = AppTheme.harmonyColors.darkCard,
                 unfocusedContainerColor = AppTheme.harmonyColors.darkCard,
             ),
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
         )
     }
