@@ -18,3 +18,5 @@ val textColor = Color(0xFFFFFFFF)
 val darkTextColor = Color(0xFF000000)
 val subtleTextColor = Color(0xFFFCFBFC)
 val disabledTextColor = Color(0x8FDADADA)
+
+val errorColor = Color(0xFFAF2E1B)

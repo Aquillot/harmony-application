@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Harmony</string>
-    <string name="INVALID_CREDENTIALS">The email or password entered is not associated with an account</string>
-    <string name="ERROR_LOGIN_400">The email or password is empty</string>
-    <string name="UNKNOWN_ERROR">An unknown error occurred</string>
-    <string name="MISSING_DATA">Data is missing</string>
-    <string name="EMAIL_ALREADY_USED">The email address is already in use</string>
-    <string name="DATABASE_ERROR">Database error</string>
+    <string name="INVALID_CREDENTIALS">Invalid email or password</string>
+    <string name="ERROR_LOGIN_400">Please enter both email and password</string>
+    <string name="UNKNOWN_ERROR">Something went wrong. Please try again</string>
+    <string name="MISSING_DATA">Some required information is missing</string>
+    <string name="EMAIL_ALREADY_USED">This email address is already in use</string>
+    <string name="DATABASE_ERROR">A server error occurred. Please try again later</string>
 
     <!-- Components -->
     <string name="EMAIL_LABEL">Email</string>
@@ -13,15 +13,22 @@
     <string name="HIDE_PASSWORD">Hide password</string>
     <string name="SHOW_PASSWORD">Show password</string>
     <string name="BACK_BUTTON">Back</string>
+    <string name="INVALID_EMAIL">Invalid email address</string>
+    <string name="INVALID_PASSWORD">Password must be at least 8 characters long</string>
 
 
     <!-- Register View -->
     <string name="REGISTER_TITLE">Create an account</string>
+    <string name="USERNAME_LABEL">Username</string>
+    <string name="CONFIRM_PASSWORD_LABEL">Confirm password</string>
     <string name="REGISTER_BUTTON">Sign up</string>
-    <string name="GO_TO_LOGIN">Not registered yet? Create your account</string>
+    <string name="GO_TO_REGISTER">Already have an account? Log in</string>
+    <string name="INVALID_USERNAME_LENGTH">Username must be 3 to 20 characters long</string>
+    <string name="INVALID_USERNAME_CONTENT">"Username can only include letters, numbers, and underscores"</string>
+    <string name="INVALID_CONFIRM_PASSWORD">"Passwords don’t match"</string>
 
     <!-- Login View -->
-    <string name="LOGIN_TITLE">Log in</string>
+    <string name="LOGIN_TITLE">Welcome back</string>
     <string name="LOGIN_BUTTON">Log in</string>
-    <string name="GO_TO_REGISTER">Already have an account? Log in</string>
+    <string name="GO_TO_LOGIN">Not registered yet? Create your account</string>
 </resources>

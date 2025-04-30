@@ -1,10 +1,10 @@
 package fr.harmony
 
 import android.os.Bundle
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,6 +23,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
+        window.insetsController?.setSystemBarsAppearance(
+            0, // On supprime le flag APPEARANCE_LIGHT_STATUS_BARS
+            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+        )
         super.onCreate(savedInstanceState)
 
         setContent {

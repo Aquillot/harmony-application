@@ -6,5 +6,5 @@ sealed class StateRegister {
     object Initial : StateRegister()
     object Loading : StateRegister()
     data class Success(val token : String) : StateRegister()
-    data class Error(val message: String) : StateRegister()
+    data class Error(val errorCode: String) : StateRegister()
 }

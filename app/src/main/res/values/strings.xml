@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Harmony</string>
-    <string name="INVALID_CREDENTIALS">L\'e-mail ou le mot de passe entré n\'est pas associé à un compte </string>
-    <string name="ERROR_LOGIN_400">L\'e-mail ou le mot de passe est vide</string>
-    <string name="UNKNOWN_ERROR">Une erreur inconnue s\'est produite</string>
-    <string name="MISSING_DATA">Les données sont manquantes</string>
-    <string name="EMAIL_ALREADY_USED">L\'adresse e-mail est déjà utilisée</string>
-    <string name="DATABASE_ERROR">Erreur de base de données</string>
+    <string name="INVALID_CREDENTIALS">E-mail ou mot de passe incorrect</string>
+    <string name="ERROR_LOGIN_400">Veuillez saisir l’e-mail et le mot de passe</string>
+    <string name="UNKNOWN_ERROR">Une erreur s’est produite. Veuillez réessayer</string>
+    <string name="MISSING_DATA">Certaines informations sont manquantes</string>
+    <string name="EMAIL_ALREADY_USED">Cette adresse e-mail est déjà utilisée</string>
+    <string name="DATABASE_ERROR">Une erreur serveur est survenue. Veuillez réessayer plus tard</string>
 
     <!-- Components -->
     <string name="EMAIL_LABEL">Email</string>
@@ -13,15 +13,22 @@
     <string name="HIDE_PASSWORD">Masquer le mot de passe</string>
     <string name="SHOW_PASSWORD">Afficher le mot de passe</string>
     <string name="BACK_BUTTON">Retour</string>
+    <string name="INVALID_EMAIL">Adresse e-mail invalide</string>
+    <string name="INVALID_PASSWORD">Le mot de passe doit contenir au moins 8 caractères</string>
 
 
     <!-- Register View -->
     <string name="REGISTER_TITLE">Créer un compte</string>
+    <string name="USERNAME_LABEL">Nom d\'utilisateur</string>
+    <string name="CONFIRM_PASSWORD_LABEL">Confirmer le mot de passe</string>
     <string name="REGISTER_BUTTON">S\'inscrire</string>
-    <string name="GO_TO_LOGIN">Pas encore inscrit ? Créez votre compte</string>
+    <string name="GO_TO_LOGIN">Vous avez déjà un compte ? Connectez-vous</string>
+    <string name="INVALID_USERNAME_LENGTH">Le nom d\'utilisateur doit contenir entre 3 et 20 caractères</string>
+    <string name="INVALID_USERNAME_CONTENT">"Le nom d\'utilisateur ne doit contenir que des lettres, des chiffres et des underscores"</string>
+    <string name="INVALID_CONFIRM_PASSWORD">"Les mots de passe ne correspondent pas"</string>
 
     <!-- Login View -->
     <string name="LOGIN_TITLE">Se connecter</string>
     <string name="LOGIN_BUTTON">Se connecter</string>
-    <string name="GO_TO_REGISTER">Vous avez déjà un compte ? Connectez-vous</string>
+    <string name="GO_TO_REGISTER">Pas encore inscrit ? Créez votre compte</string>
 </resources>
