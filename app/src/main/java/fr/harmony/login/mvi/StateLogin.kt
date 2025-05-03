@@ -5,6 +5,6 @@ package fr.harmony.login.mvi
 sealed class StateLogin {
     object Initial : StateLogin()
     object Loading : StateLogin()
-    data class Success(val token : String) : StateLogin()
+    object Success : StateLogin()
     data class Error(val errorCode: String) : StateLogin()
 }

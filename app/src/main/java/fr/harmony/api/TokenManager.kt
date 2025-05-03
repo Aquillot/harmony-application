@@ -1,13 +1,22 @@
 package fr.harmony.api
 
 import android.content.Context
-import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import androidx.datastore.preferences.core.Preferences
+import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.datastore.preferences.core.edit
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -20,28 +29,32 @@ object TokenModule {
 }
 
 
-class TokenManager(context: Context) {
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore("user_prefs")
 
-    private val prefs: SharedPreferences =
-        context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-
+class TokenManager @Inject constructor(@ApplicationContext private val context: Context) {
     companion object {
-        private const val TOKEN_KEY = "auth_token"
+        val TOKEN_KEY = stringPreferencesKey("token")
     }
 
-    // Sauvegarder le token
-    fun saveToken(token: String) {
-        prefs.edit().putString(TOKEN_KEY, token).apply()
+    val token: Flow<String?> = context.dataStore.data
+        .map { it[TOKEN_KEY] }
+
+    suspend fun saveToken(token: String) {
+        context.dataStore.edit { it[TOKEN_KEY] = token }
     }
 
-    // Récupérer le token
-    fun getToken(): String? {
-        return prefs.getString(TOKEN_KEY, null)
+    suspend fun clearToken() {
+        context.dataStore.edit { it.remove(TOKEN_KEY) }
     }
 
-    // Supprimer le token
-    fun clearToken() {
-        prefs.edit().remove(TOKEN_KEY).apply()
+    suspend fun getToken(): String? {
+        return context.dataStore.data.map { it[TOKEN_KEY] }.first()
     }
+
+    fun getTokenSync(): String? {
+        return runBlocking {
+            context.dataStore.data.map { it[TOKEN_KEY] }.first()
+        }
+    }
+
 }
-

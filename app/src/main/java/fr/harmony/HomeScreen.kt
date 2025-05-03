@@ -9,10 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun HomeScreen(token : String?) {
+fun HomeScreen(username : String?) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Travaux En Cours !", style = MaterialTheme.typography.headlineMedium)
-        Text("Voila ton Token : $token", style = MaterialTheme.typography.bodyMedium)
+        Text("Voila ton username : $username", style = MaterialTheme.typography.bodyMedium)
     }
 }
 

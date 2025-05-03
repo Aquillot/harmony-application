@@ -30,7 +30,7 @@ import fr.harmony.components.authentication.FormBottomBar
 @Composable
 fun RegisterScreen(
     vm: ModelRegister = hiltViewModel(),
-    onRegisterSuccess: (String) -> Unit,
+    onRegisterSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
     val state by vm.state.collectAsState()
@@ -87,7 +87,7 @@ fun RegisterScreen(
             when (state) {
                 is StateRegister.Success -> {
                     // On peut naviguer vers l'écran d'accueil et passer le token
-                    onRegisterSuccess((state as StateRegister.Success).token)
+                    onRegisterSuccess()
                 }
 
                 is StateRegister.Initial, is StateRegister.Error, is StateRegister.Loading -> FormRegister(

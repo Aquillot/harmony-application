@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import fr.harmony.ui.theme.HarmonyTheme
 import fr.harmony.login.mvi.LoginScreen
 import fr.harmony.api.TokenManager
+import fr.harmony.profile.mvi.ProfileScreen
 import fr.harmony.register.mvi.RegisterScreen
 import javax.inject.Inject
 
@@ -32,38 +33,57 @@ class MainActivity : ComponentActivity() {
         setContent {
             HarmonyTheme {
                 val nav = rememberNavController()
-                tokenManager.clearToken()
-                var token = tokenManager.getToken()
-                val startDestination = if (token == null) "register" else "home"
+                val startDestination = "profile"
+
+                var username = ""
+                var email = ""
 
                 println(startDestination)
-                println(token)
                 NavHost(navController = nav, startDestination = startDestination) {
+                    composable("profile") {
+                        ProfileScreen(
+                            onGetTokenSuccess = { newUsername, newEmail ->
+                                username = newUsername
+                                email = newEmail
+                                if (nav.currentDestination?.route == "profile") {
+                                    nav.navigate("home") {
+                                        popUpTo("profile") { inclusive = true }
+                                    }
+                                }
+                            },
+                            onNavigateToLogin = {
+                                nav.navigate("login") {
+                                    if (nav.currentDestination?.route == "profile") {
+                                        popUpTo("profile") {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
                     composable("login") {
-                        LoginScreen (onLoginSuccess ={ newToken ->
-                            tokenManager.saveToken(newToken)
-                            token = newToken
+                        LoginScreen (onLoginSuccess = {
                             if (nav.currentDestination?.route == "login") {
-                                nav.navigate("home") {
+                                nav.navigate("profile") {
                                     popUpTo("login") { inclusive = true }
                                 }
                             }
                         },
                             onNavigateToRegister = {
-                                nav.navigate("register") {
-                                    popUpTo("login") { inclusive = true }
+                                if (nav.currentDestination?.route == "login") {
+                                    nav.navigate("register") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
                                 }
                             }
                         )
                     }
-
                     composable("register") {
                         RegisterScreen(
-                            onRegisterSuccess = { newToken ->
-                                tokenManager.saveToken(newToken)
-                                token = newToken
+                            onRegisterSuccess = {
                                 if (nav.currentDestination?.route == "register") {
-                                    nav.navigate("home") {
+                                    nav.navigate("profile") {
                                         popUpTo("register") { inclusive = true }
                                     }
                                 }
@@ -77,7 +97,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable("home") { backStackEntry ->
-                        HomeScreen(token = token)
+                        HomeScreen(username)
                     }
                 }
             }

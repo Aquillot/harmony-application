@@ -5,6 +5,6 @@ package fr.harmony.register.mvi
 sealed class StateRegister {
     object Initial : StateRegister()
     object Loading : StateRegister()
-    data class Success(val token : String) : StateRegister()
+    object Success : StateRegister()
     data class Error(val errorCode: String) : StateRegister()
 }

@@ -29,7 +29,7 @@ import fr.harmony.R
 @Composable
 fun LoginScreen(
     vm: ModelLogin = hiltViewModel(),
-    onLoginSuccess: (String) -> Unit,
+    onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
     val state by vm.state.collectAsState()
@@ -84,7 +84,7 @@ fun LoginScreen(
             when (state) {
                 is StateLogin.Success -> {
                     // On peut naviguer vers l'écran d'accueil et passer le token
-                    onLoginSuccess((state as StateLogin.Success).token)
+                    onLoginSuccess()
                 }
 
                 is StateLogin.Initial, is StateLogin.Error, is StateLogin.Loading -> FormLogin(

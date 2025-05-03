@@ -3,6 +3,7 @@ package fr.harmony.register.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import fr.harmony.api.TokenManager
 import fr.harmony.register.domain.RegisterUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,7 @@ import javax.inject.Inject
 // Inject est une annotation de Dagger qui permet d'injecter des dépendances dans une classe
 @HiltViewModel
 class ModelRegister @Inject constructor (
-    private val registerUseCase: RegisterUseCase
+    private val registerUseCase: RegisterUseCase, private val tokenManager: TokenManager
 ) : ViewModel() {
 
     // Flux d'Actions émises par la logique métier
@@ -81,6 +82,7 @@ class ModelRegister @Inject constructor (
                         userId = loginResult.user_id
                     )
                 )
+                tokenManager.saveToken(loginResult.token)
                 println("Token: ${loginResult.token}, User ID: ${loginResult.user_id}")
             } else {
                 _actions.emit(ActionRegister.Failure(result.exceptionOrNull()?.message ?: "Erreur réseau"))
@@ -93,7 +95,7 @@ class ModelRegister @Inject constructor (
         // On va réduire l'action en un nouvel état
         val newState = when (action) {
             is ActionRegister.Loading -> StateRegister.Loading // On est en train de créer un compte
-            is ActionRegister.Success -> StateRegister.Success(action.token) // On est connecté
+            is ActionRegister.Success -> StateRegister.Success // On est connecté
             is ActionRegister.Failure -> StateRegister.Error(action.error) // On a échoué
         }
         // On va émettre le nouvel état dans le flux d'état
