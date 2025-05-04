@@ -1,7 +1,6 @@
 package fr.harmony.register.mvi
 
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -13,7 +12,6 @@ import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,6 +20,7 @@ import fr.harmony.components.authentication.EmailTextField
 import fr.harmony.components.authentication.PasswordTextField
 import fr.harmony.ui.theme.AppTheme
 import fr.harmony.R
+import fr.harmony.components.TopBar
 import fr.harmony.components.authentication.FormBottomBar
 
 // hiltViewModel() permet d'injecter le ViewModelRegister dans la fonction
@@ -54,33 +53,11 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             // TopBar : Bouton de retour
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp, 0.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedIconButton(
-                    onClick = { /* TODO: Gérer le retour */ },
-                    colors = IconButtonDefaults.outlinedIconButtonColors(
-                        containerColor = AppTheme.harmonyColors.darkCard,
-                        contentColor = AppTheme.harmonyColors.subtleTextColor,
-                    ),
-                    border = BorderStroke(
-                        1.dp,
-                        AppTheme.harmonyColors.darkCardStroke
-                    ),
-                    modifier = Modifier.size(46.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.arrow_left),
-                        contentDescription = "Retour",
-                        tint = AppTheme.harmonyColors.textColor,
-                        modifier = Modifier.size(24.dp)
-                    )
+            TopBar(
+                returnAction = {
+                    // TODO : Action de retour
                 }
-            }
+            )
 
 
             // Affichage selon l'Etat

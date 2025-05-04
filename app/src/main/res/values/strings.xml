@@ -13,9 +13,13 @@
     <string name="HIDE_PASSWORD">Masquer le mot de passe</string>
     <string name="SHOW_PASSWORD">Afficher le mot de passe</string>
     <string name="BACK_BUTTON">Retour</string>
+    <string name="DOWNLOAD_BUTTON">Télécharger</string>
+    <string name="SHARE_BUTTON">Partager</string>
     <string name="INVALID_EMAIL">Adresse e-mail invalide</string>
     <string name="INVALID_PASSWORD">Le mot de passe doit contenir au moins 8 caractères</string>
-
+    <string name="BAR_RETURN_HOME">Retour à l’accueil</string>
+    <string name="BAR_GO_EXPLORE">Explorer</string>
+    <string name="BAR_HARMONIZE">Harmoniser une image</string>
 
     <!-- Register View -->
     <string name="REGISTER_TITLE">Créer un compte</string>
@@ -31,4 +35,33 @@
     <string name="LOGIN_TITLE">Se connecter</string>
     <string name="LOGIN_BUTTON">Se connecter</string>
     <string name="GO_TO_REGISTER">Pas encore inscrit ? Créez votre compte</string>
+
+    <!-- Image Import View -->
+    <string name="IMPORT_IMAGE_TITLE">Importer une image</string>
+    <string name="OPEN_GALLERY">Ouvrir la galerie</string>
+    <string name="OPEN_CAMERA">Ouvrir l’appareil photo</string>
+    <string name="OPEN_CLOUD">Ouvrir le cloud</string>
+
+    <!-- Image Harmonization View -->
+    <string name="HARMONIZE_IMAGE_TITLE">Harmoniser une image</string>
+    <string name="BEFORE">Avant</string>
+    <string name="AFTER">Après</string>
+    <string name="STRENGTH_LABEL">Force de l’harmonisation</string>
+    <string name="SHARE">Partager l\'image via</string>
+    <string name="SHARE_BLUESKY">Partager sur Bluesky</string>
+    <string name="SHARE_PINTEREST">Partager sur Pinterest</string>
+    <string name="SHARE_FACEBOOK">Partager sur Facebook</string>
+    <string name="SHARE_IN_APP">Partager dans l\'application</string>
+
+    <!-- Socket Snackbar -->
+    <string name="SOCKET_DISCONNECTED">La connexion au serveur a été perdue, veuillez reessayer</string>
+    <string name="SOCKET_ERROR">Une erreur est survenue lors de l\'harmonisation de l\'image</string>
+    <string name="SOCKET_CONNECTION_ERROR">Erreur de connexion au serveur</string>
+    <string name="IMAGE_CONVERSION_ERROR">Une erreur est survenue lors de la conversion de l\'image</string>
+    <string name="STEP_SENDING">Envoi de l\'image au serveur</string>
+    <string name="STEP_PALETTE">Extraction de la palette de couleurs</string>
+    <string name="STEP_SIMPLIFICATION">Simplification de la palette de couleurs</string>
+    <string name="STEP_SPLIT">Découpage de l\'image</string>
+    <string name="STEP_LAYERS">Réception des couches de l\'image</string>
+    <string name="STEP_HARMONIZATION">Harmonisation de la palette de couleurs</string>
 </resources>

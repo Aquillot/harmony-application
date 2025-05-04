@@ -76,6 +76,12 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
+    // Coil
+    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
+
+    // Socket-IO
+    implementation(libs.socket.io.client)
+
     // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

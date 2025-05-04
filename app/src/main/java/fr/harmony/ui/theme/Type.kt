@@ -15,6 +15,14 @@ val titleLarge = TextStyle(
     letterSpacing = 0.15.sp
 )
 
+val titleMedium = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.W500,
+    fontSize = 20.sp,
+    lineHeight = 28.sp,
+    letterSpacing = 0.15.sp
+)
+
 val smallLine = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
