@@ -1,6 +1,5 @@
 package fr.harmony
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
@@ -63,7 +62,7 @@ class MainActivity : ComponentActivity() {
                                     username = newUsername
                                     email = newEmail
                                     if (nav.currentDestination?.route == "profile") {
-                                        nav.navigate("home") {
+                                        nav.navigate("import") {
                                             popUpTo("profile") { inclusive = true }
                                         }
                                     }
@@ -81,13 +80,14 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("login") {
-                            LoginScreen (onLoginSuccess = {
-                                if (nav.currentDestination?.route == "login") {
-                                    nav.navigate("profile") {
-                                        popUpTo("login") { inclusive = true }
+                            LoginScreen(
+                                onLoginSuccess = {
+                                    if (nav.currentDestination?.route == "login") {
+                                        nav.navigate("profile") {
+                                            popUpTo("login") { inclusive = true }
+                                        }
                                     }
-                                }
-                            },
+                                },
                                 onNavigateToRegister = {
                                     if (nav.currentDestination?.route == "login") {
                                         nav.navigate("register") {
