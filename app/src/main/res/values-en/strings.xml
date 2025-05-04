@@ -13,9 +13,13 @@
     <string name="HIDE_PASSWORD">Hide password</string>
     <string name="SHOW_PASSWORD">Show password</string>
     <string name="BACK_BUTTON">Back</string>
+    <string name="DOWNLOAD_BUTTON">Download</string>
+    <string name="SHARE_BUTTON">Share</string>
     <string name="INVALID_EMAIL">Invalid email address</string>
     <string name="INVALID_PASSWORD">Password must be at least 8 characters long</string>
-
+    <string name="BAR_RETURN_HOME">Return to home</string>
+    <string name="BAR_GO_EXPLORE">Explore</string>
+    <string name="BAR_HARMONIZE">Harmonize an image</string>
 
     <!-- Register View -->
     <string name="REGISTER_TITLE">Create an account</string>
@@ -31,4 +35,33 @@
     <string name="LOGIN_TITLE">Welcome back</string>
     <string name="LOGIN_BUTTON">Log in</string>
     <string name="GO_TO_LOGIN">Not registered yet? Create your account</string>
+
+    <!-- Image Import View -->
+    <string name="IMPORT_IMAGE_TITLE">Import an image</string>
+    <string name="OPEN_GALLERY">Open gallery</string>
+    <string name="OPEN_CAMERA">Open camera</string>
+    <string name="OPEN_CLOUD">Open cloud</string>
+
+    <!-- Image Harmonization View -->
+    <string name="HARMONIZE_IMAGE_TITLE">Harmonize an image</string>
+    <string name="BEFORE">Before</string>
+    <string name="AFTER">After</string>
+    <string name="STRENGTH_LABEL">Harmonization strength</string>
+    <string name="SHARE">Share image via</string>
+    <string name="SHARE_BLUESKY">Share on Bluesky</string>
+    <string name="SHARE_PINTEREST">Share on Pinterest</string>
+    <string name="SHARE_FACEBOOK">Share on Facebook</string>
+    <string name="SHARE_IN_APP">Share in app</string>
+
+    <!-- Socket Snackbar -->
+    <string name="SOCKET_DISCONNECTED">Connection to the server was lost, please try again</string>
+    <string name="SOCKET_ERROR">An error occurred while harmonizing the image</string>
+    <string name="SOCKET_CONNECTION_ERROR">Server connection error</string>
+    <string name="IMAGE_CONVERSION_ERROR">An error occurred during the image conversion</string>
+    <string name="STEP_SENDING">Sending image to the server</string>
+    <string name="STEP_PALETTE">Extracting color palette</string>
+    <string name="STEP_SIMPLIFICATION">Simplifying color palette</string>
+    <string name="STEP_SPLIT">Splitting the image</string>
+    <string name="STEP_LAYERS">Receiving image layers</string>
+    <string name="STEP_HARMONIZATION">Harmonizing the color palette</string>
 </resources>

@@ -1,18 +1,31 @@
 package fr.harmony
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.core.net.toUri
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import fr.harmony.ui.theme.HarmonyTheme
-import fr.harmony.login.mvi.LoginScreen
 import fr.harmony.api.TokenManager
+import fr.harmony.components.SnackBar
+import fr.harmony.harmonize.HarmonizeImageScreen
+import fr.harmony.imageimport.ImportImageScreen
+import fr.harmony.login.mvi.LoginScreen
 import fr.harmony.register.mvi.RegisterScreen
+import fr.harmony.ui.theme.HarmonyTheme
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 // Le point d'entrée de l'application Harmony
@@ -30,54 +43,94 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val snackbarHostState = remember { SnackbarHostState() }
+            val snackbarScope = rememberCoroutineScope()
+
             HarmonyTheme {
                 val nav = rememberNavController()
                 tokenManager.clearToken()
                 var token = tokenManager.getToken()
-                val startDestination = if (token == null) "register" else "home"
+                val startDestination = if (token == null) "register" else "import"
 
                 println(startDestination)
                 println(token)
-                NavHost(navController = nav, startDestination = startDestination) {
-                    composable("login") {
-                        LoginScreen (onLoginSuccess ={ newToken ->
-                            tokenManager.saveToken(newToken)
-                            token = newToken
-                            if (nav.currentDestination?.route == "login") {
-                                nav.navigate("home") {
-                                    popUpTo("login") { inclusive = true }
-                                }
-                            }
-                        },
-                            onNavigateToRegister = {
-                                nav.navigate("register") {
-                                    popUpTo("login") { inclusive = true }
-                                }
-                            }
-                        )
-                    }
 
-                    composable("register") {
-                        RegisterScreen(
-                            onRegisterSuccess = { newToken ->
-                                tokenManager.saveToken(newToken)
-                                token = newToken
-                                if (nav.currentDestination?.route == "register") {
-                                    nav.navigate("home") {
+                SnackBar(snackbarHostState = snackbarHostState) {
+                    NavHost(navController = nav, startDestination = startDestination) {
+                        composable("login") {
+                            LoginScreen(
+                                onLoginSuccess = { newToken ->
+                                    tokenManager.saveToken(newToken)
+                                    token = newToken
+                                    if (nav.currentDestination?.route == "login") {
+                                        nav.navigate("home") {
+                                            popUpTo("login") { inclusive = true }
+                                        }
+                                    }
+                                },
+                                onNavigateToRegister = {
+                                    nav.navigate("register") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+
+                        composable("register") {
+                            RegisterScreen(
+                                onRegisterSuccess = { newToken ->
+                                    tokenManager.saveToken(newToken)
+                                    token = newToken
+                                    if (nav.currentDestination?.route == "register") {
+                                        nav.navigate("home") {
+                                            popUpTo("register") { inclusive = true }
+                                        }
+                                    }
+                                },
+                                onNavigateToLogin = {
+                                    nav.navigate("login") {
                                         popUpTo("register") { inclusive = true }
                                     }
                                 }
-                            },
-                            onNavigateToLogin = {
-                                nav.navigate("login") {
-                                    popUpTo("register") { inclusive = true }
-                                }
-                            }
-                        )
-                    }
+                            )
+                        }
 
-                    composable("home") { backStackEntry ->
-                        HomeScreen(token = token)
+                        composable("import") { _ ->
+                            ImportImageScreen(
+                                navController = nav,
+                                onImageSelected = { uri ->
+                                    val encodedUri = URLEncoder.encode(
+                                        uri.toString(),
+                                        StandardCharsets.UTF_8.toString()
+                                    )
+                                    nav.navigate("harmonize?uri=$encodedUri") {
+                                        popUpTo("import") { inclusive = true }
+                                        launchSingleTop = true
+                                        restoreState = false
+                                    }
+                                },
+                            )
+                        }
+
+                        composable(
+                            route = "harmonize?uri={uri}",
+                            arguments = listOf(
+                                navArgument("uri") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val encodedUri = backStackEntry.arguments?.getString("uri")
+                            val decodedUri = encodedUri?.let { URLDecoder.decode(it, "UTF-8").toUri() }
+
+                            println(decodedUri)
+                            if (decodedUri != null) {
+                                HarmonizeImageScreen(
+                                    navController = nav,
+                                    snackbarHostState = snackbarHostState,
+                                    snackbarScope = snackbarScope,
+                                    imageUri = decodedUri,
+                                )
+                            }
+                        }
                     }
                 }
             }

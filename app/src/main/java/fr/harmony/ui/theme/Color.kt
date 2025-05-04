@@ -20,3 +20,6 @@ val subtleTextColor = Color(0xFFFCFBFC)
 val disabledTextColor = Color(0x8FDADADA)
 
 val errorColor = Color(0xFFAF2E1B)
+
+val blueMunsell = Color(0xFF048BA8)
+val greenCeladon = Color(0xFF80D39B)

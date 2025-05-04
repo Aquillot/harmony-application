@@ -21,10 +21,13 @@ data class CustomColors(
     val subtleTextColor: Color,
     val disabledTextColor: Color,
     val errorColor: Color,
+    val blueMunsell: Color,
+    val greenCeladon: Color,
 )
 
 data class CustomTypography(
     val title: TextStyle,
+    val titleMedium: TextStyle,
     val smallLine: TextStyle,
 )
 
@@ -63,11 +66,14 @@ fun HarmonyTheme(
         darkTextColor = darkTextColor,
         subtleTextColor = subtleTextColor,
         disabledTextColor = disabledTextColor,
-        errorColor = errorColor
+        errorColor = errorColor,
+        blueMunsell = blueMunsell,
+        greenCeladon = greenCeladon
     )
 
     val customTypography = CustomTypography(
         title = titleLarge,
+        titleMedium = titleMedium,
         smallLine = smallLine
     )
 
