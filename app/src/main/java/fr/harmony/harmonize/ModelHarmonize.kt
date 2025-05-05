@@ -167,19 +167,27 @@ class ModelHarmonize @Inject constructor(
     }
 
     private fun parseVerticesToColorList(verticesJson: JSONArray): List<Int> {
-        val colors = mutableListOf<Int>()
+        val colorList = mutableListOf<Int>()
 
         for (i in 0 until verticesJson.length()) {
-            val rgb = verticesJson.getJSONArray(i)
+            val colorArray = verticesJson.getJSONArray(i)
 
-            val r = (rgb.getDouble(0) * 255).toInt().coerceIn(0, 255)
-            val g = (rgb.getDouble(1) * 255).toInt().coerceIn(0, 255)
-            val b = (rgb.getDouble(2) * 255).toInt().coerceIn(0, 255)
+            val rRaw = colorArray.getDouble(0)
+            val gRaw = colorArray.getDouble(1)
+            val bRaw = colorArray.getDouble(2)
 
-            colors.add(Color.rgb(r, g, b))
+            // Détection automatique : si toutes les valeurs sont ≤ 1.0, on suppose qu'elles sont normalisées
+            val isNormalized = rRaw <= 1.0 && gRaw <= 1.0 && bRaw <= 1.0
+
+            val r = if (isNormalized) (rRaw * 255).toInt() else rRaw.toInt()
+            val g = if (isNormalized) (gRaw * 255).toInt() else gRaw.toInt()
+            val b = if (isNormalized) (bRaw * 255).toInt() else bRaw.toInt()
+
+            val color = Color.rgb(r.coerceIn(0, 255), g.coerceIn(0, 255), b.coerceIn(0, 255))
+            colorList.add(color)
         }
 
-        return colors
+        return colorList
     }
 
     private fun handleConvexHull(args: Array<Any>) {

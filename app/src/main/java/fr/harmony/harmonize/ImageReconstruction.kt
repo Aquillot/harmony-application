@@ -16,7 +16,8 @@ fun reconstructBitmap(
     require(palette.size == layerWeights.size) {
         "Palette size must match number of layers"
     }
-    val bmp = createBitmap(width, height)
+    val pixels = IntArray(width * height)
+
     for (y in 0 until height) for (x in 0 until width) {
         var aAcc = 0f; var rAcc = 0f; var gAcc = 0f; var bAcc = 0f
         palette.forEachIndexed { i, color ->
@@ -27,13 +28,16 @@ fun reconstructBitmap(
             bAcc += Color.blue(color)  * w
         }
         val final = Color.argb(
-            aAcc.coerceIn(0f,255f).toInt(),
-            rAcc.coerceIn(0f,255f).toInt(),
-            gAcc.coerceIn(0f,255f).toInt(),
-            bAcc.coerceIn(0f,255f).toInt()
+            aAcc.coerceIn(0f, 255f).toInt(),
+            rAcc.coerceIn(0f, 255f).toInt(),
+            gAcc.coerceIn(0f, 255f).toInt(),
+            bAcc.coerceIn(0f, 255f).toInt()
         )
-        bmp.setPixel(x, y, final)
+        pixels[y * width + x] = final
     }
+
+    val bmp = createBitmap(width, height)
+    bmp.setPixels(pixels, 0, width, 0, 0, width, height)
     return bmp
 }
 
