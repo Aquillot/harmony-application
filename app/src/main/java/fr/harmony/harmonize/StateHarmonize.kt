@@ -10,6 +10,7 @@ data class StateHarmonize(
     val selectedPattern: String = "",
     val shareVisible: Boolean = false,
     val shareOffset: Int = 0,
+    val sharingState: String = "none", // "none", "loading", "done"
     val step: HarmonizeStep = HarmonizeStep.SEND_IMAGE,
     val palette: List<Int> = emptyList(),
     val weights: List<List<Float>> = emptyList(),

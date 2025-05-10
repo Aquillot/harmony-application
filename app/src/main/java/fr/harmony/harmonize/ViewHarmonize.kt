@@ -233,6 +233,7 @@ fun HarmonizeImageScreen(
         SharePopup(
             visible = state.shareVisible,
             offset = state.shareOffset,
+            sharingState = state.sharingState,
             onOutsideClick = { viewModel.onIntent(IntentHarmonize.ToggleShareMenu) },
             onAppShareClick = { viewModel.onIntent(IntentHarmonize.ShareAppClicked) },
             onShareClick = { viewModel.onIntent(IntentHarmonize.ShareExternalClicked) }

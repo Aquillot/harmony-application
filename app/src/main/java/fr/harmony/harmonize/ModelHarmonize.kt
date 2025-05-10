@@ -5,13 +5,17 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
+import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.harmony.R
+import fr.harmony.harmonize.data.ApiErrorException
+import fr.harmony.harmonize.domain.HarmonizeRepository
 import fr.harmony.socket.SocketManager
 import io.socket.engineio.parser.Base64
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -40,6 +44,7 @@ enum class HarmonizeStep {
 class ModelHarmonize @Inject constructor(
     application: Application,
     private val socketManager: SocketManager,
+    private val harmonizeRepository: HarmonizeRepository
 ) : ViewModel() {
     private val contentResolver = application.contentResolver
     private val context = application.applicationContext
@@ -68,7 +73,6 @@ class ModelHarmonize @Inject constructor(
         socketManager.off("thinking")
         socketManager.off("harmonized")
         socketManager.off(io.socket.client.Socket.EVENT_DISCONNECT)
-        socketManager.disconnect()
     }
 
     override fun onCleared() {
@@ -100,6 +104,7 @@ class ModelHarmonize @Inject constructor(
             socketManager.on("convex_hull", ::handleConvexHull)
             socketManager.on("harmonized", ::handleHarmonizedPalette)
             socketManager.on(io.socket.client.Socket.EVENT_DISCONNECT) {
+                println("Harmonisation : Socket déconnecté: ${it.joinToString()}")
                 viewModelScope.launch {
                     _events.emit(EventHarmonize.ShowSnackbar(context.getString(R.string.SOCKET_DISCONNECTED)))
                     _navigation.emit(NavigationEventHarmonize.NavigateToImport)
@@ -138,23 +143,73 @@ class ModelHarmonize @Inject constructor(
         _state.update { it.copy(shareOffset = offset) }
     }
 
-    fun onSaveImageClicked() {
+    private fun onSaveImageClicked() {
         val bmp = _state.value.imageBitmap ?: return
         viewModelScope.launch {
             _events.emit(EventHarmonize.RequestSaveImage(bmp))
         }
     }
 
+    private fun uriToFile(uri: Uri): File? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+            val file = File(context.cacheDir, "original_image.png")
+            file.outputStream().use { output ->
+                inputStream.copyTo(output)
+            }
+            file
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     private fun shareApp() {
-        println("Oui c'est à faire") //TODO
+        _state.update { it.copy(sharingState = "loading") }
+
+        viewModelScope.launch {
+            try {
+                val uri = _state.value.imageUri
+                val bitmap = _state.value.imageBitmap
+
+                // On convertit l'Uri en File (image originale) et on sauvegarde le Bitmap dans un fichier temporaire
+                val originalFile = uriToFile(uri) ?: throw Exception("ORIGINAL_FILE_NULL")
+                val harmonizedFile = File(context.cacheDir, "harmonized_image.png").apply {
+                    outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                }
+
+                // Upload des images
+                val result = harmonizeRepository.uploadImages(
+                    original = originalFile,
+                    harmonized = harmonizedFile
+                )
+
+                result.fold(
+                    onSuccess = {
+                        _state.update { it.copy(sharingState = "done") }
+                    },
+                    onFailure = { it ->
+                        val errorCode = (it as? ApiErrorException)?.errorCode ?: "UNKNOWN_UPLOAD_ERROR"
+                        _state.update { it.copy(sharingState = errorCode) }
+                    }
+                )
+
+                // On supprime les fichiers temporaires
+                if (!originalFile.delete()) Log.e("shareApp", "Failed to delete the original image from cache.")
+                if (!harmonizedFile.delete()) Log.e("shareApp", "Failed to delete the harmonized image from cache.")
+            } catch (e: Exception) {
+                _state.update { it.copy(sharingState = "EXCEPTION") }
+            }
+        }
     }
 
     private fun shareExternal() {
         viewModelScope.launch {
-            val bitmap = _state.value.imageBitmap ?: return@launch
+            val bitmap = _state.value.imageBitmap
             val file = File(context.cacheDir, "shared_image.png").apply {
                 outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
             }
+
+            // On crée un URI pour le fichier temporaire
             val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
             val intent = Intent(Intent.ACTION_SEND).apply {

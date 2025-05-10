@@ -52,6 +52,7 @@
     <string name="SHARE_PINTEREST">Partager sur Pinterest</string>
     <string name="SHARE_FACEBOOK">Partager sur Facebook</string>
     <string name="SHARE_IN_APP">Partager dans l\'application</string>
+    <string name="SHARE_SUCCESS">L\'image a été partagée avec succès</string>
 
     <!-- Socket Snackbar -->
     <string name="SOCKET_DISCONNECTED">La connexion au serveur a été perdue, veuillez reessayer</string>

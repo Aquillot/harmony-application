@@ -16,7 +16,6 @@ class ModelImport @Inject constructor() : ViewModel() {
 
     // État : l'image actuellement sélectionnée (null si rien)
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
-    val selectedImageUri: StateFlow<Uri?> = _selectedImageUri.asStateFlow()
 
     // Événement unique : déclencher une navigation une fois l’image sélectionnée
     private val _navigation = MutableSharedFlow<NavigationEventImport>()

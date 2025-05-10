@@ -1,10 +1,14 @@
 package fr.harmony.harmonize.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,11 +48,13 @@ import androidx.compose.ui.unit.dp
 import fr.harmony.R
 import fr.harmony.ui.theme.AppTheme
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SharePopup(
     modifier: Modifier = Modifier,
     visible: Boolean,
     offset: Int = 0,
+    sharingState: String = "none", // "none", "loading", "done"
     onOutsideClick: () -> Unit,     // Callback appelé lorsqu’on clique en dehors du menu
     onAppShareClick: () -> Unit,    // Callback pour le bouton d'app sharing
     onShareClick: () -> Unit,       // Callback générique pour les autres boutons
@@ -105,15 +112,52 @@ fun SharePopup(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // --- App Share Button ---
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { if (visible) onAppShareClick() },
-                    contentScale = ContentScale.Fit
-                )
+                if (sharingState == "loading" || sharingState == "done") {
+                    AnimatedContent(
+                        targetState = sharingState,
+                        transitionSpec = {
+                            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+                        }
+                    ) { state ->
+                        when (state) {
+                            "loading" -> {
+                                CircularProgressIndicator(
+                                    strokeWidth = 2.dp,
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .aspectRatio(1f)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(Color(0xFF171A21))
+                                        .padding(12.dp)
+                                )
+                            }
+
+                            "done" -> {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.check),
+                                    contentDescription = stringResource(id = R.string.SHARE_SUCCESS),
+                                    tint = AppTheme.harmonyColors.lightCard,
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .aspectRatio(1f)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(Color(0xFF171A21))
+                                        .padding(12.dp)
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { if (visible && sharingState == "none") onAppShareClick() },
+                        contentScale = ContentScale.Fit
+                    )
+                }
 
                 // --- BlueSky Button ---
                 Box(
