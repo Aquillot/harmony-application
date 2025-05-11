@@ -79,4 +79,5 @@
     <string name="DELETE_IMAGE">Supprimer l\'image</string>
     <string name="DELETE_IMAGE_CONFIRM">Êtes-vous sûr de vouloir supprimer cette image ?</string>
     <string name="DELETE_IMAGE_ERRORED">Une erreur est survenue lors de la suppression de l\'image</string>
+    <string name="USER_IMAGES_EMPTY">Vous n\'avez pas encore partagé d\'images, partagez-en une pour la voir ici !</string>
 </resources>

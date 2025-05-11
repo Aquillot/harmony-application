@@ -59,10 +59,10 @@ class ModelUserImages @Inject constructor(
 
             result.fold(
                 onSuccess = { response ->
-                    _state.update { it.copy(images = response) }
+                    _state.update { it.copy(images = response, loading = false) }
                 },
                 onFailure = { exception ->
-                    _state.update { it.copy(images = emptyList(), error = exception.message) }
+                    _state.update { it.copy(images = emptyList(), error = exception.message, loading = false)}
                     _events.emit(EventUserImages.ShowError(context.getString(R.string.EXPLORE_IMAGE_ERRORED)))
                     _navigation.emit(NavigationEventUserImages.NavigateToExplore)
                 }

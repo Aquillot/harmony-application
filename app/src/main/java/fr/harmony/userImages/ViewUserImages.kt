@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -124,39 +125,54 @@ fun UserImagesScreen(
                 )
             }
 
-            when {
-                state.images.isEmpty() -> {
+            // Affichage d'un loader si l'état est en cours de chargement
+            if (state.loading) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 40.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(50.dp)
+                    )
+                }
+            }
+
+            else {
+                // Affichage d'un message si l'utilisateur n'a pas d'images
+                if (state.images.isEmpty()) {
                     Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 40.dp),
-                        contentAlignment = Alignment.Center
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 20.dp),
                     ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(50.dp)
+                        Text(
+                            text = stringResource(id = R.string.USER_IMAGES_EMPTY),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = AppTheme.harmonyColors.textColor,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
 
-                else -> {
-                    // Affichage des images
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(14.dp),
-                    ) {
-                        items(state.images.size) { id ->
-                            Card(
-                                image = state.images[id],
-                                onCardLongPress = {
-                                    viewModel.handleIntent(IntentUserImages.ShowPopup(state.images[id]))
-                                },
-                            )
+                // Affichage des images
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    items(state.images.size) { id ->
+                        Card(
+                            image = state.images[id],
+                            onCardLongPress = {
+                                viewModel.handleIntent(IntentUserImages.ShowPopup(state.images[id]))
+                            },
+                        )
 
-                            // Spacer pour la navbar
-                            if (id == state.images.size - 1) {
-                                Spacer(modifier = Modifier.height(120.dp))
-                            }
+                        // Spacer pour la navbar
+                        if (id == state.images.size - 1) {
+                            Spacer(modifier = Modifier.height(120.dp))
                         }
                     }
                 }
