@@ -12,10 +12,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.harmony.R
+import fr.harmony.database.HarmonizationSessionModel
+import fr.harmony.database.SessionRepository
 import fr.harmony.harmonize.data.ApiErrorException
 import fr.harmony.harmonize.domain.HarmonizeRepository
 import fr.harmony.socket.SocketManager
 import io.socket.engineio.parser.Base64
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,11 +27,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 enum class HarmonizeStep {
     SEND_IMAGE,
@@ -44,6 +49,7 @@ enum class HarmonizeStep {
 class ModelHarmonize @Inject constructor(
     application: Application,
     private val socketManager: SocketManager,
+    private val sessionRepository: SessionRepository,
     private val harmonizeRepository: HarmonizeRepository
 ) : ViewModel() {
     private val contentResolver = application.contentResolver
@@ -60,6 +66,66 @@ class ModelHarmonize @Inject constructor(
     // SharedFlow pour émettre des événements de navigation
     private val _navigation = MutableSharedFlow<NavigationEventHarmonize>()
     val navigation: SharedFlow<NavigationEventHarmonize> = _navigation.asSharedFlow()
+
+
+    fun updateSessionOnDataBase(id: Long) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                val originalBitmap = _state.value.imageBitmap
+                val targetWidth = 200
+                val aspectRatio = originalBitmap.height.toFloat() / originalBitmap.width
+                val targetHeight = (targetWidth * aspectRatio).toInt()
+                val newThumbnail = Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true)
+                val session = HarmonizationSessionModel(
+                    palette = _state.value.palette,
+                    harmonizedPalette = _state.value.harmonizedPalette,
+                    selectedPattern = _state.value.selectedPattern,
+                )
+                sessionRepository.updateSession(id,newThumbnail,session)
+            }
+        }
+    }
+
+    fun saveSessionOnDataBase(){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                val sourceUri = _state.value.imageUri
+                val fileName = Regex("temp_image_(\\d+\\.jpg)$").find(sourceUri.toString())?.groupValues?.get(1) ?: "default.jpg"
+                val destinationFile = File(context.filesDir, fileName)
+                context.contentResolver.openInputStream(sourceUri)?.use { inputStream ->
+                    destinationFile.outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+
+
+                val originalBitmap = _state.value.imageBitmap
+                val targetWidth = 200
+                val aspectRatio = originalBitmap.height.toFloat() / originalBitmap.width
+                val targetHeight = (targetWidth * aspectRatio).toInt()
+                val thumbnail = Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true)
+                val previewFilename = "thumb_${fileName}"
+                val previewFile = File(context.filesDir,  previewFilename)
+                previewFile.outputStream().use { out ->
+                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 80, out)
+                }
+
+                val session = HarmonizationSessionModel(
+                    width = _state.value.imageWidth,
+                    height = _state.value.imageHeight,
+                    widthPreview = thumbnail.width,
+                    heightPreview = thumbnail.height,
+                    originalPath = destinationFile.absolutePath,
+                    previewPath = previewFile.absolutePath,
+                    palette = _state.value.palette,
+                    weights = _state.value.weights,
+                    harmonizedPalette = _state.value.harmonizedPalette,
+                    selectedPattern = _state.value.selectedPattern,
+                )
+                sessionRepository.save(session)
+            }
+        }
+    }
 
     fun cleanup() {
         println("Harmonisation : Clean des ressources")
@@ -109,6 +175,18 @@ class ModelHarmonize @Inject constructor(
                     _events.emit(EventHarmonize.ShowSnackbar(context.getString(R.string.SOCKET_DISCONNECTED)))
                     _navigation.emit(NavigationEventHarmonize.NavigateToImport)
                 }
+            }
+        }
+    }
+
+    fun initFromDataBase(id : Long) {
+        viewModelScope.launch {
+            val session = sessionRepository.loadById(id)
+            if (session != null) {
+                reconstructImageThanksHarmonizationSession(session)
+            } else {
+                _events.emit(EventHarmonize.ShowSnackbar(context.getString(R.string.SESSION_NOT_FOUND)))
+                _navigation.emit(NavigationEventHarmonize.NavigateToImport)
             }
         }
     }
@@ -269,6 +347,25 @@ class ModelHarmonize @Inject constructor(
                 put("palette", vertices)
             })
         }
+    }
+
+    fun reconstructImageThanksHarmonizationSession(
+        session: HarmonizationSessionModel
+    ) {
+        _state .update {
+            it.copy(
+                imageUri = session.originalPath.toUri(),
+                imageWidth = session.width,
+                imageHeight = session.height,
+                palette = session.palette,
+                weights = session.weights,
+                harmonizedPalette = session.harmonizedPalette,
+                selectedPattern = session.selectedPattern,
+                step = HarmonizeStep.DONE,
+
+            )
+        }
+        generateReconstructedImage()
     }
 
     private fun handleImageLayers(args: Array<Any>) {

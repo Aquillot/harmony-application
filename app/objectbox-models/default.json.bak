@@ -1,0 +1,77 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:7817400455447094948",
+      "lastPropertyId": "10:984207303546690292",
+      "name": "HarmonizationSession",
+      "properties": [
+        {
+          "id": "1:3919569835921161620",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8516572143399423217",
+          "name": "previewPath",
+          "type": 9
+        },
+        {
+          "id": "3:4043285185886342870",
+          "name": "paletteJson",
+          "type": 9
+        },
+        {
+          "id": "4:1006503363556164322",
+          "name": "weightsJson",
+          "type": 9
+        },
+        {
+          "id": "5:1138822269154773330",
+          "name": "harmonizedJson",
+          "type": 9
+        },
+        {
+          "id": "6:7089131174754910905",
+          "name": "originalPath",
+          "type": 9
+        },
+        {
+          "id": "7:696908270802969822",
+          "name": "width",
+          "type": 5
+        },
+        {
+          "id": "8:1234448615294469798",
+          "name": "height",
+          "type": 5
+        },
+        {
+          "id": "9:399414205149692196",
+          "name": "widthPreview",
+          "type": 5
+        },
+        {
+          "id": "10:984207303546690292",
+          "name": "heightPreview",
+          "type": 5
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:7817400455447094948",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

@@ -66,13 +66,13 @@ class ModelLogin @Inject constructor (
             val result = loginUseCase.login(email, password)
             if (result.isSuccess) {
                 val loginResult = result.getOrThrow()
+                tokenManager.saveToken(loginResult.token)
                 _actions.emit(
                     ActionLogin.Success(
                         token = loginResult.token,
                         userId = loginResult.user_id
                     )
                 )
-                tokenManager.saveToken(loginResult.token)
                 println("Token: ${loginResult.token}, User ID: ${loginResult.user_id}")
             } else {
                 val code = (result.exceptionOrNull() as? ApiErrorException)?.errorCode ?: "UNKNOWN_ERROR"

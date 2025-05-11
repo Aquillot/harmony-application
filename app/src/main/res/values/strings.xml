@@ -21,6 +21,12 @@
     <string name="BAR_GO_EXPLORE">Explorer</string>
     <string name="BAR_HARMONIZE">Harmoniser une image</string>
 
+    <!-- Home View -->
+    <string name="YOUR_HARMONIZED_IMAGES">Vos images harmonisées</string>
+    <string name="NO_HARMONIZED_IMAGES">Aucune image harmonisée pour le moment</string>
+    <string name="ADD_IMAGE">Ajouter une image</string>
+    <string name="AVATAR">Avatar</string>
+
     <!-- Register View -->
     <string name="REGISTER_TITLE">Créer un compte</string>
     <string name="USERNAME_LABEL">Nom d\'utilisateur</string>
@@ -54,6 +60,7 @@
     <string name="SHARE_IN_APP">Partager dans l\'application</string>
     <string name="SHARE_SUCCESS">L\'image a été partagée avec succès</string>
     <string name="SHARE_ERROR">Une erreur est survenue lors du partage de l\'image</string>
+    <string name="SESSION_NOT_FOUND">L\'image n’a pas été trouvée</string>
 
     <!-- Socket Snackbar -->
     <string name="SOCKET_DISCONNECTED">La connexion au serveur a été perdue, veuillez reessayer</string>

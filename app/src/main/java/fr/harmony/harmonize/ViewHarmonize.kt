@@ -66,19 +66,30 @@ fun navigateBack(navController: NavController) {
 
 @Composable
 fun HarmonizeImageScreen(
-    imageUri: Uri,
+    imageUri: Uri = Uri.EMPTY,
+    idFromDataBase : Long = -1,
     viewModel: ModelHarmonize = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
     snackbarScope: CoroutineScope,
     navController: NavController
 ) {
+
     LaunchedEffect(imageUri) {
-        viewModel.initWith(imageUri)
+        if (idFromDataBase != -1L) {
+            viewModel.initFromDataBase(idFromDataBase)
+        } else {
+            viewModel.initWith(imageUri)
+        }
     }
 
     DisposableEffect(Unit) {
         onDispose {
-            viewModel.cleanup()
+            if (idFromDataBase != -1L) {
+                viewModel.updateSessionOnDataBase(idFromDataBase)
+            }else{
+                viewModel.saveSessionOnDataBase()
+                viewModel.cleanup()
+            }
         }
     }
 

@@ -1,8 +1,6 @@
 package fr.harmony.profile.data
 
-import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
 
 data class ErrorResponse(
     val error: String,

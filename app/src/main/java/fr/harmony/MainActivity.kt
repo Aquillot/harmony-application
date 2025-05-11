@@ -19,6 +19,7 @@ import fr.harmony.api.TokenManager
 import fr.harmony.components.SnackBar
 import fr.harmony.explore.ExploreScreen
 import fr.harmony.harmonize.HarmonizeImageScreen
+import fr.harmony.homescreen.HomeScreen
 import fr.harmony.imageimport.ImportImageScreen
 import fr.harmony.login.mvi.LoginScreen
 import fr.harmony.profile.mvi.ProfileScreen
@@ -29,6 +30,7 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
+import android.net.Uri
 
 // Le point d'entrée de l'application Harmony
 @AndroidEntryPoint
@@ -61,7 +63,7 @@ class MainActivity : ComponentActivity() {
                                 onGetTokenSuccess = { newUser ->
                                     user = newUser
                                     if (nav.currentDestination?.route == "profile") {
-                                        nav.navigate("import") {
+                                        nav.navigate("home") {
                                             popUpTo("profile") { inclusive = true }
                                         }
                                     }
@@ -150,6 +152,25 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
+                        composable(
+                            route = "harmonize?idFromDataBase={idFromDataBase}/originalUri={originalUri}",
+                            arguments = listOf(
+                                navArgument("idFromDataBase") { type = NavType.LongType },
+                                navArgument("originalUri") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            var idFromDataBase = backStackEntry.arguments?.getLong("idFromDataBase")
+                             idFromDataBase = idFromDataBase ?: -1L
+                            val originalUri = backStackEntry.arguments?.getString("originalUri")
+                            HarmonizeImageScreen(
+                                navController = nav,
+                                snackbarHostState = snackbarHostState,
+                                snackbarScope = snackbarScope,
+                                idFromDataBase = idFromDataBase,
+                                imageUri = originalUri?.let { URLDecoder.decode(it, "UTF-8").toUri() } ?: Uri.EMPTY,
+                            )
+                        }
+
                         composable("explore") {
                             ExploreScreen(
                                 user = user,
@@ -168,7 +189,12 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("home") { backStackEntry ->
-                            HomeScreen(user.username)
+                            HomeScreen(user=user, navController = nav , onAddSession={nav.navigate("import")},
+                                onRunSession = { id, originalUri ->
+                                    nav.navigate("harmonize?idFromDataBase=$id/originalUri=$originalUri") {
+                                        popUpTo("home") { inclusive = true }
+                                    }
+                                })
                         }
                     }
                 }

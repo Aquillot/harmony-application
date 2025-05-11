@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import fr.harmony.database.MoshiProvider
 import fr.harmony.login.data.LoginApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,9 +31,7 @@ object NetworkModule {
 
     @Provides @Singleton
     // Moshi est une bibliothèque qui permet de convertir des objets en JSON et inversement
-    fun provideMoshi(): Moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+    fun provideMoshi(): Moshi = MoshiProvider.moshi
 
     @Provides @Singleton
     // Retrofit est une bibliothèque qui permet de faire des appels réseau

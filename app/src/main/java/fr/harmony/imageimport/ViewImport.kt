@@ -128,7 +128,7 @@ fun ImportImageScreen(
                 .padding(11.dp, 40.dp, 11.dp, 11.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            TopBar(returnAction = { /* TODO Action de retour */ })
+            TopBar(returnAction = { navController.navigate("home") { popUpTo("import") { inclusive = true }} })
 
             Box(
                 modifier = Modifier.padding(6.dp, 11.dp),

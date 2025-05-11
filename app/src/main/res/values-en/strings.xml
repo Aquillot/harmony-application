@@ -21,6 +21,12 @@
     <string name="BAR_GO_EXPLORE">Explore</string>
     <string name="BAR_HARMONIZE">Harmonize an image</string>
 
+    <!-- Home View -->
+    <string name="YOUR_HARMONIZED_IMAGES">>Your harmonized images</string>
+    <string name="NO_HARMONIZED_IMAGES">">No harmonized images yet</string>
+    <string name="ADD_IMAGE">Add an image</string>
+    <string name="AVATAR">Avatar</string>
+
     <!-- Register View -->
     <string name="REGISTER_TITLE">Create an account</string>
     <string name="USERNAME_LABEL">Username</string>
@@ -54,7 +60,7 @@
     <string name="SHARE_IN_APP">Share in app</string>
     <string name="SHARE_SUCCESS">The image was successfully shared</string>
     <string name="SHARE_ERROR">An error occurred while sharing the image</string>
-
+    <string name="SESSION_NOT_FOUND">The image was not found</string>
     <!-- Socket Snackbar -->
     <string name="SOCKET_DISCONNECTED">Connection to the server was lost, please try again</string>
     <string name="SOCKET_ERROR">An error occurred while harmonizing the image</string>
