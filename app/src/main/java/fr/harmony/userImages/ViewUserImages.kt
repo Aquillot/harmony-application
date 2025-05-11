@@ -1,9 +1,10 @@
-package fr.harmony.explore
+package fr.harmony.userImages
 
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,9 +24,11 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -33,9 +36,11 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -46,21 +51,18 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import fr.harmony.R
-import fr.harmony.User
-import fr.harmony.components.Avatar
 import fr.harmony.components.BottomBar
+import fr.harmony.components.Popup
 import fr.harmony.components.TopBar
-import fr.harmony.explore.components.ImagePager
-import fr.harmony.explore.data.SharedImage
 import fr.harmony.ui.theme.AppTheme
+import fr.harmony.userImages.data.SharedImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 @Composable
-fun ExploreScreen(
-    user: User,
-    viewModel: ModelExplore = hiltViewModel(),
+fun UserImagesScreen(
+    viewModel: ModelUserImages = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
     snackbarScope: CoroutineScope,
@@ -69,11 +71,11 @@ fun ExploreScreen(
 
     // 1. Collecter les événements
     LaunchedEffect(viewModel) {
-        viewModel.handleIntent(IntentExplore.LoadImages)
+        viewModel.handleIntent(IntentUserImages.LoadImages)
 
         viewModel.events.collect { event ->
             when (event) {
-                is EventExplore.ShowError -> {
+                is EventUserImages.ShowError -> {
                     // Afficher un message d'erreur
                     snackbarScope.launch {
                         snackbarHostState.showSnackbar(
@@ -93,11 +95,8 @@ fun ExploreScreen(
     LaunchedEffect(viewModel) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is NavigationEventExplore.NavigateToHome -> {
-                    navController.navigate("home")
-                }
-                is NavigationEventExplore.NavigateToUserImages -> {
-                    navController.navigate("user_images")
+                is NavigationEventUserImages.NavigateToExplore -> {
+                    navController.navigate("explore")
                 }
             }
         }
@@ -111,20 +110,15 @@ fun ExploreScreen(
                 .padding(11.dp, 40.dp, 11.dp, 11.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            TopBar(
-                user = user,
-                userButtonAction = {
-                    viewModel.handleIntent(IntentExplore.NavigateToUserImages)
-                },
-                returnAction = {
-                viewModel.handleIntent(IntentExplore.NavigateToHome)
+            TopBar(returnAction = {
+                viewModel.handleIntent(IntentUserImages.NavigateToExplore)
             })
 
             Box(
                 modifier = Modifier.padding(6.dp, 11.dp),
             ) {
                 Text(
-                    text = stringResource(id = R.string.EXPLORE_TITLE),
+                    text = stringResource(id = R.string.USER_IMAGES_TITLE),
                     style = AppTheme.harmonyTypography.title,
                     color = AppTheme.harmonyColors.textColor,
                 )
@@ -154,8 +148,8 @@ fun ExploreScreen(
                         items(state.images.size) { id ->
                             Card(
                                 image = state.images[id],
-                                onImageClick = {
-                                    viewModel.handleIntent(IntentExplore.ShowSlider(state.images[id]))
+                                onCardLongPress = {
+                                    viewModel.handleIntent(IntentUserImages.ShowPopup(state.images[id]))
                                 },
                             )
 
@@ -170,17 +164,21 @@ fun ExploreScreen(
         }
 
         // Popup pour afficher l'image avant/après (avec zoom)
-        state.sliderImage?.let {
-            ImagePager(
-                visible = state.sliderVisible,
-                beforeImage = it.original_image_url,
-                afterImage = it.harmonized_image_url,
-                onDismiss = {
-                    viewModel.handleIntent(IntentExplore.HideSlider)
-                },
-                onDoubleTap = { type ->
-                    viewModel.handleIntent(IntentExplore.LikeImage(type == "before"))
-                },
+        Popup(
+            visible = state.popupVisible,
+            actionText = stringResource(id = R.string.DELETE_IMAGE),
+            onDismiss = {
+                viewModel.handleIntent(IntentUserImages.HidePopup)
+            },
+            onAction = {
+                viewModel.handleIntent(IntentUserImages.DeleteImage)
+            }
+        ) {
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = stringResource(id = R.string.DELETE_IMAGE_CONFIRM),
+                style = MaterialTheme.typography.titleMedium,
+                color = AppTheme.harmonyColors.textColor,
             )
         }
 
@@ -192,8 +190,10 @@ fun ExploreScreen(
 fun Card(
     image: SharedImage,
     modifier: Modifier = Modifier,
-    onImageClick: () -> Unit = {},
+    onCardLongPress: () -> Unit = {},
 ) {
+    val haptic = LocalHapticFeedback.current
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -203,41 +203,28 @@ fun Card(
                 color = AppTheme.harmonyColors.darkCardStroke,
                 shape = RoundedCornerShape(14.dp)
             )
-            .padding(10.dp, 10.dp, 10.dp, 10.dp),
+            .combinedClickable(
+                onClick = {}, // Obligatoire mais ignoré
+                onLongClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onCardLongPress()
+                },
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple()
+            )
+            .padding(10.dp)
     ) {
-        Column (
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ){
-            // Header
-            Row (
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ){
-                Avatar(
-                    userId = image.user.id,
-                    modifier = Modifier
-                        .size(40.dp)
-                )
-                Text(
-                    text = image.user.username,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
-            // Body
-            if (image.user_vote == null) {
-                // Affichage de l'image avant/après
-                ImagesSameSize(
-                    image = image,
-                    onImageClick = onImageClick,
-                )
-            } else {
-                // Affichage d'une image recouvrante
-                OverlappingImages(
-                    image = image,
-                    firstOverlap = image.user_vote == "original",
-                    onImageClick = onImageClick,
-                )
-            }
+        if (image.harmonized_votes == image.original_votes) {
+            // Affichage de l'image avant/après
+            ImagesSameSize(
+                image = image,
+            )
+        } else {
+            // Affichage d'une image recouvrante
+            OverlappingImages(
+                image = image,
+                firstOverlap = image.original_votes > image.harmonized_votes,
+            )
         }
     }
 }
@@ -245,7 +232,6 @@ fun Card(
 @Composable
 fun ImagesSameSize(
      image: SharedImage,
-     onImageClick: () -> Unit = {},
 ) {
     Row (
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -265,8 +251,7 @@ fun ImagesSameSize(
                     clip = true
                     shape = RoundedCornerShape(14.dp)
                     translationX = -0.7f * translation // 70% recouvrant
-                }
-                .clickable { onImageClick() },
+                },
             placeholder = painterResource(R.drawable.placeholder),
             onError = {
                 Log.e("AsyncImage", "Erreur de chargement", it.result.throwable)
@@ -285,8 +270,7 @@ fun ImagesSameSize(
                 .graphicsLayer {
                     clip = true
                     shape = RoundedCornerShape(14.dp)
-                }
-                .clickable { onImageClick() },
+                },
             placeholder = painterResource(R.drawable.placeholder),
             onError = {
                 Log.e("AsyncImage", "Erreur de chargement", it.result.throwable)
@@ -299,7 +283,6 @@ fun ImagesSameSize(
 fun OverlappingImages(
     image: SharedImage,
     firstOverlap: Boolean = true,
-    onImageClick: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -330,8 +313,7 @@ fun OverlappingImages(
                 .graphicsLayer {
                     clip = true
                     shape = RoundedCornerShape(14.dp)
-                }
-                .clickable { onImageClick() },
+                },
             onError = {
                 Log.e("AsyncImage", "Erreur de chargement", it.result.throwable)
             }
@@ -363,8 +345,7 @@ fun OverlappingImages(
                 .graphicsLayer {
                     clip = true
                     shape = RoundedCornerShape(14.dp)
-                }
-                .clickable { onImageClick() },
+                },
             onError = {
                 Log.e("AsyncImage", "Erreur de chargement", it.result.throwable)
             }

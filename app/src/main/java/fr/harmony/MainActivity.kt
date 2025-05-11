@@ -24,6 +24,7 @@ import fr.harmony.login.mvi.LoginScreen
 import fr.harmony.profile.mvi.ProfileScreen
 import fr.harmony.register.mvi.RegisterScreen
 import fr.harmony.ui.theme.HarmonyTheme
+import fr.harmony.userImages.UserImagesScreen
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -49,19 +50,16 @@ class MainActivity : ComponentActivity() {
 
             HarmonyTheme {
                 val nav = rememberNavController()
-                val startDestination = "explore" //TODO EDIT
-
-                var username = ""
-                var email = ""
+                val startDestination = "profile"
+                var user = User()
 
                 println(startDestination)
                 SnackBar(snackbarHostState = snackbarHostState) {
                     NavHost(navController = nav, startDestination = startDestination) {
                         composable("profile") {
                             ProfileScreen(
-                                onGetTokenSuccess = { newUsername, newEmail ->
-                                    username = newUsername
-                                    email = newEmail
+                                onGetTokenSuccess = { newUser ->
+                                    user = newUser
                                     if (nav.currentDestination?.route == "profile") {
                                         nav.navigate("import") {
                                             popUpTo("profile") { inclusive = true }
@@ -154,6 +152,15 @@ class MainActivity : ComponentActivity() {
 
                         composable("explore") {
                             ExploreScreen(
+                                user = user,
+                                navController = nav,
+                                snackbarHostState = snackbarHostState,
+                                snackbarScope = snackbarScope,
+                            )
+                        }
+
+                        composable("user_images") {
+                            UserImagesScreen(
                                 navController = nav,
                                 snackbarHostState = snackbarHostState,
                                 snackbarScope = snackbarScope,
@@ -161,7 +168,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("home") { backStackEntry ->
-                            HomeScreen(username)
+                            HomeScreen(user.username)
                         }
                     }
                 }

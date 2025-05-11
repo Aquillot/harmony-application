@@ -61,7 +61,6 @@ class ModelProfile @Inject constructor (
         // On va lancer une coroutine pour effectuer l'appel réseau
 
         viewModelScope.launch {
-            print("getProfile")
             // On va émettre une action de chargement pour indiquer que l'on est en train de se connecter
             _actions.emit(ActionProfile.Loading)
             if (tokenManager.getTokenSync() == null) {
@@ -92,7 +91,11 @@ class ModelProfile @Inject constructor (
         // On va réduire l'action en un nouvel état
         val newState = when (action) {
             is ActionProfile.Loading -> StateProfile.Loading // On est en train de se connecter
-            is ActionProfile.Success -> StateProfile.Success(action.email,action.username) // On est connecté
+            is ActionProfile.Success -> StateProfile.Success(
+                action.email,
+                action.username,
+                action.id
+            ) // On est connecté
             is ActionProfile.Failure -> StateProfile.Error(action.errorCode) // On a échoué
         }
         // On va émettre le nouvel état dans le flux d'état

@@ -1,33 +1,31 @@
-package fr.harmony.explore.data
+package fr.harmony.userImages.data
 
 import android.util.Log
-import fr.harmony.explore.domain.ExploreRepository
-import fr.harmony.harmonize.data.ApiErrorException
+import fr.harmony.userImages.domain.UserImagesRepository
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class ExploreRepositoryImpl @Inject constructor(
-    private val api: ExploreApi,
+class UserImagesRepositoryImpl @Inject constructor(
+    private val api: UserImagesApi,
     private val moshi: com.squareup.moshi.Moshi
-) : ExploreRepository {
+) : UserImagesRepository {
 
-    override suspend fun getImages(): Result<List<SharedImage>> {
+    override suspend fun getUserImages(): Result<List<SharedImage>> {
         return try {
-            val response = api.getImages()
+            val response = api.getUserImages()
             Result.success(response)
         } catch (e: Exception) {
-            Log.e("ExploreRepositoryImpl", "Error: ${e.message}")
+            Log.e("UserImagesRepositoryImpl", "Error: ${e.message}")
             Result.failure(e)
         }
     }
 
-    override suspend fun vote(
-        imageId: Int,
-        isOriginalVote: Boolean
-    ): Result<VoteResponse> {
+    override suspend fun delete(
+        imageId: Int
+    ): Result<DeleteResponse> {
         return try {
-            val response = api.vote(imageId, RegisterVote(isOriginalVote))
+            val response = api.delete(imageId)
             Result.success(response)
         } catch (e: HttpException) {
             val errorJson = e.response()?.errorBody()?.string().orEmpty()
@@ -46,7 +44,7 @@ class ExploreRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             Result.failure(ApiErrorException("NETWORK_ERROR"))
         } catch (e: Exception) {
-            Log.e("ExploreRepositoryImpl", "Error: ${e.message}")
+            Log.e("UserImagesRepositoryImpl", "Error: ${e.message}")
             Result.failure(ApiErrorException("UNKNOWN_ERROR"))
         }
     }

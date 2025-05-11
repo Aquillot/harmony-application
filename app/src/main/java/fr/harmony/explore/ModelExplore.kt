@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import fr.harmony.IntentExplore
 import fr.harmony.R
 import fr.harmony.explore.data.SharedImage
 import fr.harmony.explore.domain.ExploreRepository
@@ -50,6 +49,11 @@ class ModelExplore @Inject constructor(
                     _navigation.emit(NavigationEventExplore.NavigateToHome)
                 }
             }
+            is IntentExplore.NavigateToUserImages -> {
+                viewModelScope.launch {
+                    _navigation.emit(NavigationEventExplore.NavigateToUserImages)
+                }
+            }
         }
     }
 
@@ -57,7 +61,6 @@ class ModelExplore @Inject constructor(
         viewModelScope.launch {
             // Upload des images
             val result = repository.getImages()
-            println("Result: $result")
 
             result.fold(
                 onSuccess = { response ->

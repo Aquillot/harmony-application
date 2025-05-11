@@ -1,5 +1,6 @@
 package fr.harmony.profile.data
 
+import android.util.Log
 import com.squareup.moshi.Moshi
 import fr.harmony.profile.domain.ProfileRepository
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
             // Si errorCode vaut "null", on prend le code HTTP, sinon on garde la valeur du JSON
             val code = errorResp?.error_code.takeUnless { it == "null" }?: ("errorProfile" + e.code().toString())
-            println("\n code : $code")
+            Log.e("ProfileRepositoryImpl", "Error Code: $code")
             // On renvoie une exception avec le code d'erreur
             Result.failure(ApiErrorException(code))
         } catch (e: java.io.IOException) {
@@ -35,7 +36,7 @@ class ProfileRepositoryImpl @Inject constructor(
             Result.failure(ApiErrorException("NETWORK_ERROR"))
         } catch (e: Exception) {
             // Exception levée si le JSON n'est pas bien formé
-            println("Exception : $e\n")
+            Log.e("ProfileRepositoryImpl", "Error: ${e.message}")
             Result.failure(ApiErrorException("UNKNOWN_ERROR"))
         }
     }

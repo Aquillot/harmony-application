@@ -1,6 +1,7 @@
 package fr.harmony.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -28,7 +29,9 @@ fun Avatar(
         Image(
             painter = painterResource(id = resId),
             contentDescription = "Avatar $avatarIndex",
-            modifier = modifier.clip(CircleShape),
+            modifier = modifier
+                .aspectRatio(1f)
+                .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
     } else {

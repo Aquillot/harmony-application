@@ -1,22 +1,35 @@
 package fr.harmony.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import fr.harmony.R
+import fr.harmony.User
 import fr.harmony.ui.theme.AppTheme
 
 @Composable
@@ -25,6 +38,8 @@ fun TopBar(
     returnAction: (() -> Unit)? = null,
     downloadAction: (() -> Unit)? = null,
     shareAction: (() -> Unit)? = null,
+    user: User? = null,
+    userButtonAction: (() -> Unit)? = null,
 ) {
     // TopBar : Bouton de retour
     Row(
@@ -92,8 +107,7 @@ fun TopBar(
                     1.dp,
                     AppTheme.harmonyColors.darkCardStroke
                 ),
-                modifier = Modifier
-                    .size(46.dp)
+                modifier = Modifier.size(46.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.share_nodes),
@@ -101,6 +115,39 @@ fun TopBar(
                     tint = AppTheme.harmonyColors.textColor,
                     modifier = Modifier.padding(12.dp)
                 )
+            }
+        }
+
+        if (userButtonAction != null && user != null) {
+            Box(
+                modifier = Modifier
+                    .height(48.dp)
+                    .border(
+                        width = 1.dp,
+                        color = AppTheme.harmonyColors.darkCardStroke,
+                        shape = CircleShape
+                    )
+                    .clip(CircleShape)
+                    .background(color = AppTheme.harmonyColors.darkCard)
+                    .clickable { userButtonAction() }
+                    .padding(end = 12.dp),
+
+                contentAlignment = Alignment.Center
+            ) {
+                Row (
+                    modifier = Modifier.padding(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Avatar(userId = user.id)
+                    Text(
+                        text = user.username,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = AppTheme.harmonyColors.textColor,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
             }
         }
     }

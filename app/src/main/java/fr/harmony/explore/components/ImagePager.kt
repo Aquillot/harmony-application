@@ -1,6 +1,7 @@
 package fr.harmony.explore.components
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -64,8 +65,8 @@ fun ImagePager(
     beforeImage: String,
     afterImage: String,
     modifier: Modifier = Modifier,
-    onOutsideClick: () -> Unit = {},
-    onImageDoubleTap: (image: String) -> Unit = {},
+    onDismiss: () -> Unit = {},
+    onDoubleTap: (image: String) -> Unit = {},
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val imageBounds = remember { mutableStateOf(List(2) { androidx.compose.ui.geometry.Rect.Zero }) }
@@ -73,6 +74,12 @@ fun ImagePager(
     LaunchedEffect(visible) {
         if (visible) {
             pagerState.scrollToPage(0)
+        }
+    }
+
+    if (visible) {
+        BackHandler(enabled = true) {
+            onDismiss()
         }
     }
 
@@ -88,7 +95,7 @@ fun ImagePager(
                 .pointerInput(Unit) {
                     detectTapGestures { offset ->
                         val tappedInside = imageBounds.value.any { it.contains(offset) }
-                        if (!tappedInside) onOutsideClick()
+                        if (!tappedInside) onDismiss()
                     }
                 }
         ) {
@@ -113,7 +120,7 @@ fun ImagePager(
                             this[page] = newBounds
                         }
                     },
-                    onImageDoubleTap = { onImageDoubleTap(if(page == 0) "before" else "after") }
+                    onImageDoubleTap = { onDoubleTap(if(page == 0) "before" else "after") }
                 )
             }
         }
