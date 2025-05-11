@@ -53,6 +53,7 @@
     <string name="SHARE_FACEBOOK">Partager sur Facebook</string>
     <string name="SHARE_IN_APP">Partager dans l\'application</string>
     <string name="SHARE_SUCCESS">L\'image a été partagée avec succès</string>
+    <string name="SHARE_ERROR">Une erreur est survenue lors du partage de l\'image</string>
 
     <!-- Socket Snackbar -->
     <string name="SOCKET_DISCONNECTED">La connexion au serveur a été perdue, veuillez reessayer</string>

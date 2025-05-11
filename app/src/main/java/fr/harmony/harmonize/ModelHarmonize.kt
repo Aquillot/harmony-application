@@ -189,9 +189,10 @@ class ModelHarmonize @Inject constructor(
                         _state.update { it.copy(sharingState = "done") }
                     },
                     onFailure = { it ->
-                        println("Harmonisation : Erreur lors de l'upload : ${it.message}")
-                        val errorCode = (it as? ApiErrorException)?.errorCode ?: "UNKNOWN_UPLOAD_ERROR"
-                        _state.update { it.copy(sharingState = errorCode) }
+                        // En cas d'erreur, on affiche un message d'erreur et on reset l'état
+                        Log.e("shareApp", "Failed to upload images: ${it.message}")
+                        _state.update { it.copy(sharingState = "none") }
+                        _events.emit(EventHarmonize.ShowSnackbar(context.getString(R.string.SHARE_ERROR)))
                     }
                 )
 

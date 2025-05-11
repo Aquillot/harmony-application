@@ -53,6 +53,7 @@
     <string name="SHARE_FACEBOOK">Share on Facebook</string>
     <string name="SHARE_IN_APP">Share in app</string>
     <string name="SHARE_SUCCESS">The image was successfully shared</string>
+    <string name="SHARE_ERROR">An error occurred while sharing the image</string>
 
     <!-- Socket Snackbar -->
     <string name="SOCKET_DISCONNECTED">Connection to the server was lost, please try again</string>
