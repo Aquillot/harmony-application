@@ -82,7 +82,11 @@ class ModelUserImages @Inject constructor(
             val result = repository.delete(imageId)
             result.fold(
                 onSuccess = {
-                    loadImages()
+                    // Mise à jour de l'état après la suppression
+                    _state.update { state ->
+                        val updatedImages = state.images.filterNot { it.image_id == imageId }
+                        state.copy(images = updatedImages, popupImage = null)
+                    }
                     updatePopupVisibility(false)
                 },
                 onFailure = { exception ->
