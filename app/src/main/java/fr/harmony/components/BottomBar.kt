@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
 import fr.harmony.R
 
@@ -25,11 +26,18 @@ fun BottomBar(id: Int, navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 11.dp)
-            .navigationBarsPadding()
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(getNavigationBarHeight())
+                .background(Color.Black)
+                .align(Alignment.BottomCenter)
+        )
 
         Box(
             modifier = Modifier
+                .navigationBarsPadding()
                 .fillMaxWidth()
                 .height(160.dp)
                 .align(Alignment.BottomCenter)
@@ -47,6 +55,7 @@ fun BottomBar(id: Int, navController: NavController) {
         // BottomBar en position absolue
         Box(
             modifier = Modifier
+                .navigationBarsPadding()
                 .fillMaxWidth()
                 .height(60.dp)
                 .align(Alignment.BottomCenter)
@@ -64,12 +73,19 @@ fun BottomBar(id: Int, navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Home
                 BottomBarIcon(
                     icon = R.drawable.home,
                     contentDescription = R.string.BAR_RETURN_HOME,
                     active = id == 0,
+                    onClick = {
+                        navController.navigate("home") {
+                            popUpTo("harmonize") { inclusive = true }
+                        }
+                    }
                 )
 
+                // Import
                 BottomBarIcon(
                     icon = R.drawable.wand_magic_sparkles,
                     contentDescription = R.string.BAR_HARMONIZE,
@@ -81,10 +97,16 @@ fun BottomBar(id: Int, navController: NavController) {
                     }
                 )
 
+                // Explorer
                 BottomBarIcon(
                     icon = R.drawable.globe,
                     contentDescription = R.string.BAR_GO_EXPLORE,
                     active = id == 2,
+                    onClick = {
+                        navController.navigate("explore") {
+                            popUpTo("harmonize") { inclusive = true }
+                        }
+                    }
                 )
             }
         }
@@ -122,4 +144,9 @@ fun BottomBarIcon(
             tint = iconColor
         )
     }
+}
+
+@Composable
+fun getNavigationBarHeight(): Dp {
+    return WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 }

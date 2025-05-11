@@ -65,4 +65,10 @@
     <string name="STEP_SPLIT">Découpage de l\'image</string>
     <string name="STEP_LAYERS">Réception des couches de l\'image</string>
     <string name="STEP_HARMONIZATION">Harmonisation de la palette de couleurs</string>
+
+    <!-- Image Explore View -->
+    <string name="EXPLORE_TITLE">Faites votre choix !</string>
+    <string name="EXPLORE_NO_IMAGES">Aucune image à afficher</string>
+    <string name="EXPLORE_VOTE_ERRORED">Une erreur est survenue lors de l\'envoi de votre vote, celui-ci n\'a pas été pris en compte</string>
+    <string name="EXPLORE_IMAGE_ERRORED">Une erreur est survenue lors de la récupération des images</string>
 </resources>

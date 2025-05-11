@@ -17,6 +17,7 @@ import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import fr.harmony.api.TokenManager
 import fr.harmony.components.SnackBar
+import fr.harmony.explore.ExploreScreen
 import fr.harmony.harmonize.HarmonizeImageScreen
 import fr.harmony.imageimport.ImportImageScreen
 import fr.harmony.login.mvi.LoginScreen
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
 
             HarmonyTheme {
                 val nav = rememberNavController()
-                val startDestination = "profile"
+                val startDestination = "explore" //TODO EDIT
 
                 var username = ""
                 var email = ""
@@ -149,6 +150,14 @@ class MainActivity : ComponentActivity() {
                                     imageUri = decodedUri,
                                 )
                             }
+                        }
+
+                        composable("explore") {
+                            ExploreScreen(
+                                navController = nav,
+                                snackbarHostState = snackbarHostState,
+                                snackbarScope = snackbarScope,
+                            )
                         }
 
                         composable("home") { backStackEntry ->

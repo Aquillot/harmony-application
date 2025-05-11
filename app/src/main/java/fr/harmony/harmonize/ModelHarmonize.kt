@@ -3,6 +3,7 @@ package fr.harmony.harmonize
 import android.app.Application
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.util.Log
@@ -15,7 +16,6 @@ import fr.harmony.harmonize.data.ApiErrorException
 import fr.harmony.harmonize.domain.HarmonizeRepository
 import fr.harmony.socket.SocketManager
 import io.socket.engineio.parser.Base64
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -47,7 +47,7 @@ class ModelHarmonize @Inject constructor(
     private val harmonizeRepository: HarmonizeRepository
 ) : ViewModel() {
     private val contentResolver = application.contentResolver
-    private val context = application.applicationContext
+    private val context = application
 
     // StateFlow pour exposer le state
     private val _state = MutableStateFlow(StateHarmonize())
@@ -153,9 +153,10 @@ class ModelHarmonize @Inject constructor(
     private fun uriToFile(uri: Uri): File? {
         return try {
             val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-            val file = File(context.cacheDir, "original_image.png")
+            val file = File(context.cacheDir, "original_image.jpg")
             file.outputStream().use { output ->
-                inputStream.copyTo(output)
+                val image = BitmapFactory.decodeStream(inputStream)
+                image.compress(Bitmap.CompressFormat.JPEG, 80, output)
             }
             file
         } catch (e: Exception) {
@@ -173,8 +174,8 @@ class ModelHarmonize @Inject constructor(
 
                 // On convertit l'Uri en File (image originale) et on sauvegarde le Bitmap dans un fichier temporaire
                 val originalFile = uriToFile(uri) ?: throw Exception("ORIGINAL_FILE_NULL")
-                val harmonizedFile = File(context.cacheDir, "harmonized_image.png").apply {
-                    outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                val harmonizedFile = File(context.cacheDir, "harmonized_image.jpg").apply {
+                    outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it) }
                 }
 
                 // Upload des images
@@ -188,6 +189,7 @@ class ModelHarmonize @Inject constructor(
                         _state.update { it.copy(sharingState = "done") }
                     },
                     onFailure = { it ->
+                        println("Harmonisation : Erreur lors de l'upload : ${it.message}")
                         val errorCode = (it as? ApiErrorException)?.errorCode ?: "UNKNOWN_UPLOAD_ERROR"
                         _state.update { it.copy(sharingState = errorCode) }
                     }

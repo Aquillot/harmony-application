@@ -3,8 +3,8 @@ package fr.harmony.harmonize.data
 import fr.harmony.harmonize.domain.HarmonizeRepository
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import com.squareup.moshi.Moshi
+import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
 import retrofit2.HttpException
 import java.io.IOException
@@ -47,7 +47,7 @@ class HarmonizeRepositoryImpl @Inject constructor(
     }
 
     private fun java.io.File.asMultipart(name: String): MultipartBody.Part {
-        val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), this)
+        val requestFile = this.asRequestBody("image/*".toMediaTypeOrNull())
         return MultipartBody.Part.createFormData(name, this.name, requestFile)
     }
 }

@@ -52,6 +52,7 @@
     <string name="SHARE_PINTEREST">Share on Pinterest</string>
     <string name="SHARE_FACEBOOK">Share on Facebook</string>
     <string name="SHARE_IN_APP">Share in app</string>
+    <string name="SHARE_SUCCESS">The image was successfully shared</string>
 
     <!-- Socket Snackbar -->
     <string name="SOCKET_DISCONNECTED">Connection to the server was lost, please try again</string>
@@ -64,4 +65,10 @@
     <string name="STEP_SPLIT">Splitting the image</string>
     <string name="STEP_LAYERS">Receiving image layers</string>
     <string name="STEP_HARMONIZATION">Harmonizing the color palette</string>
+
+    <!-- Image Explore View -->
+    <string name="EXPLORE_TITLE">Vote for your favorites</string>
+    <string name="EXPLORE_NO_IMAGES">No images to display</string>
+    <string name="EXPLORE_VOTE_ERRORED">An error occurred while submitting your vote; it was not recorded</string>
+    <string name="EXPLORE_IMAGE_ERRORED">An error occurred while retrieving images</string>
 </resources>
