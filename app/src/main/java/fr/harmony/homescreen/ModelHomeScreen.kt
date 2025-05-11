@@ -1,32 +1,19 @@
 package fr.harmony.homescreen
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
 import androidx.paging.cachedIn
 import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
-import fr.harmony.api.TokenManager
-import fr.harmony.database.HarmonizationSessionModelPreview
 import fr.harmony.database.SessionRepository
-import fr.harmony.imageimport.IntentImport
-import fr.harmony.login.domain.LoginUseCase
-import fr.harmony.login.mvi.ActionLogin
-import fr.harmony.login.mvi.StateLogin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -35,12 +22,10 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.lang.Thread.sleep
 import javax.inject.Inject
 
 data class GalleryImage(val id :Long,val originalUri :Uri, val uri: Uri, val span: Int, val aspectRatio: Float, val height: Int = 0)
@@ -51,10 +36,15 @@ class ModelHomeScreen @Inject constructor(
     application: Application,
     private val repo: SessionRepository
 ) : ViewModel() {
+    private val context = application
 
-
+    // StateFlow pour exposer le state
     private val _state = MutableStateFlow<StateHomeScreen>(StateHomeScreen.EndRefreshing)
     val state : StateFlow<StateHomeScreen> = _state.asStateFlow()
+
+    // SharedFlow pour émettre des événements de navigation
+    private val _navigation = MutableSharedFlow<NavigationEventHome>()
+    val navigation: SharedFlow<NavigationEventHome> = _navigation.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -71,14 +61,22 @@ class ModelHomeScreen @Inject constructor(
         }
     }
 
-    fun onIntent(intent: IntentHomeScreen) {
-        println("Intent reçu : $intent")
+    fun handleIntent(intent: IntentHomeScreen) {
         when (intent) {
             is IntentHomeScreen.DeleteImage -> deleteImage(intent.id)
             is IntentHomeScreen.EndRefresh -> { _state.value = StateHomeScreen.EndRefreshing }
+            is IntentHomeScreen.NavigateToImport -> {
+                viewModelScope.launch {
+                    _navigation.emit(NavigationEventHome.NavigateToImport)
+                }
+            }
+            is IntentHomeScreen.NavigateToHarmonize -> {
+                viewModelScope.launch {
+                    _navigation.emit(NavigationEventHome.NavigateToHarmonize(intent.id, intent.uri))
+                }
+            }
         }
     }
-
 
     private fun deleteImage(id: Long) {
         viewModelScope.launch {
@@ -90,9 +88,6 @@ class ModelHomeScreen @Inject constructor(
             Log.d("ModelHomeScreen", "Image deleted: $id")
         }
     }
-
-    // Application context for FileProvider
-    private val context: Context = application.applicationContext
 
     val pager: Flow<PagingData<GalleryImage>> =
             Pager(

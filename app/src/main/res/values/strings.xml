@@ -23,7 +23,7 @@
 
     <!-- Home View -->
     <string name="YOUR_HARMONIZED_IMAGES">Vos images harmonisées</string>
-    <string name="NO_HARMONIZED_IMAGES">Aucune image harmonisée pour le moment</string>
+    <string name="NO_HARMONIZED_IMAGES">Vous n’avez pas encore harmonisé d’images</string>
     <string name="ADD_IMAGE">Ajouter une image</string>
     <string name="AVATAR">Avatar</string>
 

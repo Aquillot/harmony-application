@@ -120,15 +120,12 @@ fun ExploreScreen(
                 viewModel.handleIntent(IntentExplore.NavigateToHome)
             })
 
-            Box(
+            Text(
+                text = stringResource(id = R.string.EXPLORE_TITLE),
+                style = AppTheme.harmonyTypography.title,
+                color = AppTheme.harmonyColors.textColor,
                 modifier = Modifier.padding(6.dp, 11.dp),
-            ) {
-                Text(
-                    text = stringResource(id = R.string.EXPLORE_TITLE),
-                    style = AppTheme.harmonyTypography.title,
-                    color = AppTheme.harmonyColors.textColor,
-                )
-            }
+            )
 
             when {
                 state.images.isEmpty() -> {

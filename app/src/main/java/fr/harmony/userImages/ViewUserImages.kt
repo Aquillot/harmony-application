@@ -127,34 +127,26 @@ fun UserImagesScreen(
 
             // Affichage d'un loader si l'état est en cours de chargement
             if (state.loading) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(50.dp)
-                    )
-                }
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(top = 40.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
             }
 
             else {
                 // Affichage d'un message si l'utilisateur n'a pas d'images
                 if (state.images.isEmpty()) {
-                    Box(
+                    Text(
+                        text = stringResource(id = R.string.USER_IMAGES_EMPTY),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = AppTheme.harmonyColors.textColor,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(top = 20.dp),
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.USER_IMAGES_EMPTY),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = AppTheme.harmonyColors.textColor,
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                    )
                 }
 
                 // Affichage des images

@@ -85,4 +85,5 @@
     <string name="DELETE_IMAGE">Delete Image</string>
     <string name="DELETE_IMAGE_CONFIRM">Are you sure you want to delete this image?</string>
     <string name="DELETE_IMAGE_ERRORED">An error occurred while deleting the image</string>
+    <string name="USER_IMAGES_EMPTY">You haven\'t shared any images yet, share one to see it here!</string>
 </resources>

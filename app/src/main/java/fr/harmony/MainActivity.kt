@@ -189,12 +189,10 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("home") { backStackEntry ->
-                            HomeScreen(user=user, navController = nav , onAddSession={nav.navigate("import")},
-                                onRunSession = { id, originalUri ->
-                                    nav.navigate("harmonize?idFromDataBase=$id/originalUri=$originalUri") {
-                                        popUpTo("home") { inclusive = true }
-                                    }
-                                })
+                            HomeScreen(
+                                user = user,
+                                navController = nav
+                            )
                         }
                     }
                 }

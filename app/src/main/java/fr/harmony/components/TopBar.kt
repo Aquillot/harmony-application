@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +36,9 @@ fun TopBar(
     returnAction: (() -> Unit)? = null,
     downloadAction: (() -> Unit)? = null,
     shareAction: (() -> Unit)? = null,
+    addImageAction: (() -> Unit)? = null,
     user: User? = null,
+    userButtonLeft: Boolean = false,
     userButtonAction: (() -> Unit)? = null,
 ) {
     // TopBar : Bouton de retour
@@ -69,6 +69,13 @@ fun TopBar(
                     modifier = Modifier.padding(12.dp)
                 )
             }
+        }
+
+        if (userButtonAction != null && user != null && userButtonLeft) {
+            UserButton(
+                user = user,
+                userButtonAction = userButtonAction
+            )
         }
 
         // On passe à droite
@@ -118,37 +125,70 @@ fun TopBar(
             }
         }
 
-        if (userButtonAction != null && user != null) {
-            Box(
-                modifier = Modifier
-                    .height(48.dp)
-                    .border(
-                        width = 1.dp,
-                        color = AppTheme.harmonyColors.darkCardStroke,
-                        shape = CircleShape
-                    )
-                    .clip(CircleShape)
-                    .background(color = AppTheme.harmonyColors.darkCard)
-                    .clickable { userButtonAction() }
-                    .padding(end = 12.dp),
-
-                contentAlignment = Alignment.Center
+        if (addImageAction != null) {
+            OutlinedIconButton(
+                onClick = { addImageAction() },
+                colors = IconButtonDefaults.outlinedIconButtonColors(
+                    containerColor = AppTheme.harmonyColors.darkCard,
+                    contentColor = AppTheme.harmonyColors.subtleTextColor,
+                ),
+                border = BorderStroke(
+                    1.dp,
+                    AppTheme.harmonyColors.darkCardStroke
+                ),
+                modifier = Modifier.size(46.dp)
             ) {
-                Row (
-                    modifier = Modifier.padding(4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Avatar(userId = user.id)
-                    Text(
-                        text = user.username,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = AppTheme.harmonyColors.textColor,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.plus),
+                    contentDescription = stringResource(id = R.string.ADD_IMAGE),
+                    tint = AppTheme.harmonyColors.textColor,
+                    modifier = Modifier.padding(12.dp)
+                )
             }
+        }
+
+        if (userButtonAction != null && user != null && !userButtonLeft) {
+            UserButton(
+                user = user,
+                userButtonAction = userButtonAction
+            )
+        }
+    }
+}
+
+@Composable
+fun UserButton(
+    user: User,
+    userButtonAction: (() -> Unit)? = null,
+) {
+    Box(
+        modifier = Modifier
+            .height(48.dp)
+            .border(
+                width = 1.dp,
+                color = AppTheme.harmonyColors.darkCardStroke,
+                shape = CircleShape
+            )
+            .clip(CircleShape)
+            .background(color = AppTheme.harmonyColors.darkCard)
+            .clickable { userButtonAction?.invoke() }
+            .padding(end = 12.dp),
+
+        contentAlignment = Alignment.Center
+    ) {
+        Row (
+            modifier = Modifier.padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Avatar(userId = user.id)
+            Text(
+                text = user.username,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = AppTheme.harmonyColors.textColor,
+                style = MaterialTheme.typography.bodyLarge,
+            )
         }
     }
 }
