@@ -2,6 +2,7 @@ package fr.harmony.profile.mvi
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
@@ -31,7 +32,7 @@ fun ProfileScreen(
     when (state) {
         is StateProfile.Initial -> {
             // État initial : on affiche un écran de chargement
-            LoadingView() //TODO Modifier le style
+            LoadingView()
         }
         is StateProfile.Loading -> {
             // État de chargement : on affiche un écran de chargement
@@ -62,8 +63,9 @@ fun ProfileScreen(
 fun LoadingView() {
     Box(
         Modifier
+            .navigationBarsPadding()
             .fillMaxWidth()
-            .padding(32.dp),
+            .padding(top = 80.dp),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()

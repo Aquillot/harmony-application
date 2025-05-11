@@ -37,12 +37,13 @@ class MainActivity : ComponentActivity() {
     lateinit var tokenManager: TokenManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         window.insetsController?.setSystemBarsAppearance(
             0, // On supprime le flag APPEARANCE_LIGHT_STATUS_BARS
             WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
         )
-        super.onCreate(savedInstanceState)
 
         setContent {
             val snackbarHostState = remember { SnackbarHostState() }
@@ -53,7 +54,6 @@ class MainActivity : ComponentActivity() {
                 val startDestination = "profile"
                 var user = User()
 
-                println(startDestination)
                 SnackBar(snackbarHostState = snackbarHostState) {
                     NavHost(navController = nav, startDestination = startDestination) {
                         composable("profile") {
