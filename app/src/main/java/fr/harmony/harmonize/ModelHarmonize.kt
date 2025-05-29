@@ -80,6 +80,7 @@ class ModelHarmonize @Inject constructor(
                     palette = _state.value.palette,
                     harmonizedPalette = _state.value.harmonizedPalette,
                     selectedPattern = _state.value.selectedPattern,
+                    slider = _state.value.sliderPosition,
                 )
                 sessionRepository.updateSession(id,newThumbnail,session)
             }
@@ -98,7 +99,7 @@ class ModelHarmonize @Inject constructor(
                     }
                 }
 
-
+                val slider = _state.value.sliderPosition
                 val originalBitmap = _state.value.imageBitmap
                 val targetWidth = 200
                 val aspectRatio = originalBitmap.height.toFloat() / originalBitmap.width
@@ -121,6 +122,7 @@ class ModelHarmonize @Inject constructor(
                     weights = _state.value.weights,
                     harmonizedPalette = _state.value.harmonizedPalette,
                     selectedPattern = _state.value.selectedPattern,
+                    slider = slider
                 )
                 sessionRepository.save(session)
             }
@@ -362,7 +364,7 @@ class ModelHarmonize @Inject constructor(
                 harmonizedPalette = session.harmonizedPalette,
                 selectedPattern = session.selectedPattern,
                 step = HarmonizeStep.DONE,
-
+                sliderPosition = session.slider
             )
         }
         generateReconstructedImage()

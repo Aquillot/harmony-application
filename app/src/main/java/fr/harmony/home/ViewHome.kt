@@ -1,4 +1,4 @@
-package fr.harmony.homescreen
+package fr.harmony.home
 
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -80,10 +80,10 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(state) {
-        if (state is StateHomeScreen.Refreshing) {
+        if (state is StateHome.Refreshing) {
             println("HomeScreen: on refresh")
             lazyImages.refresh()
-            viewModel.handleIntent(IntentHomeScreen.EndRefresh)
+            viewModel.handleIntent(IntentHome.EndRefresh)
         }
     }
 
@@ -113,7 +113,7 @@ fun HomeScreen(
                     userButtonLeft = true,
                     userButtonAction = { },
                     addImageAction = {
-                        viewModel.handleIntent(IntentHomeScreen.NavigateToImport)
+                        viewModel.handleIntent(IntentHome.NavigateToImport)
                     },
                 )
 
@@ -145,7 +145,7 @@ fun HomeScreen(
                     coroutineScope = coroutineScope,
                     onRunSession = { id, uri ->
                         viewModel.handleIntent(
-                            IntentHomeScreen.NavigateToHarmonize(id, uri.toString())
+                            IntentHome.NavigateToHarmonize(id, uri.toString())
                         )
                     },
                     viewModel = viewModel
@@ -292,7 +292,7 @@ fun MasonryGrid(
                         .padding(8.dp)
                         .clickable {
                             viewModel.handleIntent(
-                                IntentHomeScreen.DeleteImage(
+                                IntentHome.DeleteImage(
                                     imageToDelete!!.id
                                 )
                             )

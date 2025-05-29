@@ -11,7 +11,8 @@ data class HarmonizationSessionModel(
     val palette: List<Int> = emptyList(),
     val weights: List<List<Float>> = emptyList(),
     val harmonizedPalette: Map<String, List<Int>> = emptyMap(),
-    val selectedPattern : String = ""
+    val selectedPattern : String = "",
+    val slider : Float = 1f
 )
 
 data class HarmonizationSessionModelPreview(

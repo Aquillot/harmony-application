@@ -20,4 +20,6 @@ data class HarmonizationSession(
     var weightsJson: String= "",
     var harmonizedJson: String= "",
     var selectedPattern: String = "",
+
+    var slider: Float = 1f
     )

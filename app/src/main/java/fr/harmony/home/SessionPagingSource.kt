@@ -1,4 +1,4 @@
-package fr.harmony.homescreen
+package fr.harmony.home
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:7817400455447094948",
-      "lastPropertyId": "10:984207303546690292",
+      "lastPropertyId": "11:3063202195945641012",
       "name": "HarmonizationSession",
       "properties": [
         {
@@ -58,6 +58,11 @@
           "id": "10:984207303546690292",
           "name": "heightPreview",
           "type": 5
+        },
+        {
+          "id": "11:3063202195945641012",
+          "name": "selectedPattern",
+          "type": 9
         }
       ],
       "relations": []

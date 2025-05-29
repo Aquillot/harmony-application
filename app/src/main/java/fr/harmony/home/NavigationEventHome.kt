@@ -1,4 +1,4 @@
-package fr.harmony.homescreen
+package fr.harmony.home
 
 sealed class NavigationEventHome {
     data object NavigateToImport: NavigationEventHome()

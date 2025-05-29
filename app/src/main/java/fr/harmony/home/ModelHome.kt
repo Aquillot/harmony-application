@@ -1,4 +1,4 @@
-package fr.harmony.homescreen
+package fr.harmony.home
 
 import android.app.Application
 import android.net.Uri
@@ -39,8 +39,8 @@ class ModelHomeScreen @Inject constructor(
     private val context = application
 
     // StateFlow pour exposer le state
-    private val _state = MutableStateFlow<StateHomeScreen>(StateHomeScreen.EndRefreshing)
-    val state : StateFlow<StateHomeScreen> = _state.asStateFlow()
+    private val _state = MutableStateFlow<StateHome>(StateHome.EndRefreshing)
+    val state : StateFlow<StateHome> = _state.asStateFlow()
 
     // SharedFlow pour émettre des événements de navigation
     private val _navigation = MutableSharedFlow<NavigationEventHome>()
@@ -54,23 +54,23 @@ class ModelHomeScreen @Inject constructor(
                     // On recharge la base de données
                     Log.d("ModelHomeScreen", "Refreshing database")
                     repo.refreshDatabase.value = false
-                    _state.value = StateHomeScreen.Refreshing
+                    _state.value = StateHome.Refreshing
                     println("Refreshing database état : ${_state.value}")
                 }
             }
         }
     }
 
-    fun handleIntent(intent: IntentHomeScreen) {
+    fun handleIntent(intent: IntentHome) {
         when (intent) {
-            is IntentHomeScreen.DeleteImage -> deleteImage(intent.id)
-            is IntentHomeScreen.EndRefresh -> { _state.value = StateHomeScreen.EndRefreshing }
-            is IntentHomeScreen.NavigateToImport -> {
+            is IntentHome.DeleteImage -> deleteImage(intent.id)
+            is IntentHome.EndRefresh -> { _state.value = StateHome.EndRefreshing }
+            is IntentHome.NavigateToImport -> {
                 viewModelScope.launch {
                     _navigation.emit(NavigationEventHome.NavigateToImport)
                 }
             }
-            is IntentHomeScreen.NavigateToHarmonize -> {
+            is IntentHome.NavigateToHarmonize -> {
                 viewModelScope.launch {
                     _navigation.emit(NavigationEventHome.NavigateToHarmonize(intent.id, intent.uri))
                 }
@@ -84,7 +84,7 @@ class ModelHomeScreen @Inject constructor(
                 println("Deleting image: $id")
                 repo.deleteSession(id)
             }
-            _state.value = StateHomeScreen.Refreshing
+            _state.value = StateHome.Refreshing
             Log.d("ModelHomeScreen", "Image deleted: $id")
         }
     }

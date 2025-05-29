@@ -44,6 +44,7 @@ class SessionRepository @Inject constructor(application: Application) {
             weightsJson      = weightsAdapter.toJson(model.weights)
             harmonizedJson   = harmonizedAdapter.toJson(model.harmonizedPalette)
             selectedPattern  = model.selectedPattern
+            slider          = model.slider
         }
         if (entity.width==0 || entity.height==0) {
             return
@@ -66,7 +67,8 @@ class SessionRepository @Inject constructor(application: Application) {
                 palette = paletteAdapter.fromJson(entity.paletteJson) ?: emptyList(),
                 weights = weightsAdapter.fromJson(entity.weightsJson) ?: emptyList(),
                 harmonizedPalette = harmonizedAdapter.fromJson(entity.harmonizedJson) ?: emptyMap(),
-                selectedPattern = entity.selectedPattern
+                selectedPattern = entity.selectedPattern,
+                slider = entity.slider
             )
         }
     }
@@ -83,7 +85,8 @@ class SessionRepository @Inject constructor(application: Application) {
             palette = paletteAdapter.fromJson(entity.paletteJson) ?: emptyList(),
             weights = weightsAdapter.fromJson(entity.weightsJson) ?: emptyList(),
             harmonizedPalette = harmonizedAdapter.fromJson(entity.harmonizedJson) ?: emptyMap(),
-            selectedPattern = entity.selectedPattern
+            selectedPattern = entity.selectedPattern,
+            slider = entity.slider
         )
     }
 
@@ -94,7 +97,7 @@ class SessionRepository @Inject constructor(application: Application) {
         previewFile.outputStream().use { out ->
             newThumbnail.compress(Bitmap.CompressFormat.JPEG, 80, out)
         }
-
+        entity.slider = model.slider
         entity.paletteJson = paletteAdapter.toJson(model.palette)
         entity.selectedPattern = model.selectedPattern
         box.put(entity)
